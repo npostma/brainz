@@ -115,7 +115,7 @@ class Brain:
 
                 deltas = [];
                 for (nextNeuronNr, nextNeuron) in enumerate(nextLayer.neurons):
-                    delta = nextNeuron.delta * nextNeuron.weights[nextNeuronNr];
+                    delta = nextNeuron.delta * nextNeuron.weights[neuronNr];
                     deltas.append(delta);
 
                 error = reduce(f, deltas);
