@@ -16,10 +16,10 @@ class Brain:
     numLayers = 0;
     # Some learningrate Todo: no clue of this is a good value for my code
     learningRate = 0.3;
-    # Todo: Some value for soming. Find out what its good for
+    # Todo: Some value for computing. Find out what its good for
     learningMomentum = 0.9;
 
-    def __init__(self):
+    def __init__(self, genome = None):
         # Rule of thumb to determine wich size the neural network sould have
         if(self.inputSize > self.outputSize) :
             self.hiddenSize = self.inputSize
@@ -29,6 +29,10 @@ class Brain:
             self.numLayers = max(self.outputSize - self.inputSize, 3);
 
         self.createLayers();
+
+        if(genome != None):
+            for(cellNr, cell) in enumerate(genome):
+                self.layers[cell.x].neurons[cell.y].weights[cell.z] = cell.weight;
 
     def getOutput(self):
         # Return the output layer

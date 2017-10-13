@@ -42,7 +42,7 @@ visual.showOutput();
 brain.compute([1, 0.03, 0, 0.15, 0.80, 0.40]); # I expected someting like: [0, 0.5]
 visual.showOutput();
 
-brain.compute([1, 0.01, 0, 0.02, 0.02, 0.40]);  # I expected someting like: [1, 0.8]
+brain.compute([0, 0.01, 0, 0.02, 0.02, 0.40]);  # I expected someting like: [1, 0.8]
 visual.showOutput();
 
 
