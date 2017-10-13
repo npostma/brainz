@@ -9,11 +9,15 @@ class Population:
 
     brains = [];
 
-    def __init__(self):
+    def __init__(self, brains = None):
         self.brains = list();
 
-        for i in range(0, self.populationSize):
-            self.brains.append(Brain.Brain());
+        if(brains == None) :
+            for i in range(0, self.populationSize):
+                self.brains.append(Brain.Brain());
+        else:
+            self.brains = brains;
+            self.populationSize = len(brains);
 
     def learn(self, inputData, outputData):
         # Let the whole population learn the same data
@@ -25,18 +29,20 @@ class Population:
         for (brainNr, brain) in enumerate(self.brains):
             brain.compute(inputData);
             print(self.fitness(brain, expectedOutputData));
+        print('');
 
     def clone(self):
         return copy.deepcopy(self);
 
-    # Every brain will create 2 children with there neighbour brain on a given moment.
-    # So the first and last wil have 4 childs (2 boys, 2 girls)
-    # Any other brain wil have 8 childs (4 boys, 4 girls)
+    # Every couple will create 2 children with there neighbour brain on a given moment.
     def breed(self):
         childGenomes = [];
         childPopulation = [];
+
+        numberOfBrains = len(self.brains);
+
+        # Todo: gene selection!!!!!!
         for (brainNr, dadBrain) in enumerate(self.brains):
-            numberOfBrains = len(self.brains);
             # As long as we can find a mother brain
             # Note: For now a bit strange but for every step the mom becomes the dad :-D
             if((brainNr + 1) < numberOfBrains):
@@ -48,14 +54,12 @@ class Population:
                 for(genomeNr, genome) in enumerate(self.crossover(motherGenome, dadGenome)):
                     childGenomes.append(genome);
 
-
         # Convert the genomes back to brains so that we can let them crunch numbers
         for(genomeNr, genome) in enumerate(childGenomes):
             childBrain = Brain.Brain(genome);
             childPopulation.append(childBrain)
 
-
-        return childPopulation;
+        return self.__class__(childPopulation);
 
     def crossover(self, motherGenome, dadGenome):
         children = [];
