@@ -24,12 +24,12 @@ class Neuron:
 
         self.name = name;
 
-        self.value = random.random();
+        self.value = random.uniform(-1, 1)
 
         self.weights = [];
 
         for i in range(0, numWeights) :
-            self.weights.append(random.random());
+            self.weights.append(random.uniform(-1, 1));
             self.gradient.append(0);
             
     def doPrint(self):
