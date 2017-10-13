@@ -1,3 +1,4 @@
+import math;
 import Layer;
 import Neuron;
 
@@ -142,7 +143,8 @@ class Brain:
         return value * (1 - value) * (expected - value);
 
     def sigmoid(self, value):
-        return (1 / (1 + (((-1 * value) / 1) ** 2)));
+        return 1 / (1 + math.exp(-value));
+        #return (1 / (1 + (((-1 * value) / 1) ** 2)));
 
 
 

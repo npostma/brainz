@@ -59,3 +59,5 @@ visual.show();
 
 for value in output:
     print str(value);
+
+exit(1);
