@@ -32,6 +32,7 @@ trainPopulation(population);
 population.compute([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3]); # I expected someting like: [0, 0.3]
 
 newPopulation = population.breed();
+
 #Train them
 trainPopulation(newPopulation);
 
@@ -43,6 +44,8 @@ trainPopulation(newestPopulation);
 
 newestPopulation.compute([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3]); # I expected someting like: [0, 0.3]
 
-# Population.compute([1, 0.03, 0, 0.15, 0.80, 0.40], [0, 0.5]); # I expected someting like: [0, 0.5]
+population.showFitness();
+newPopulation.showFitness();
+newestPopulation.showFitness();
 
-# Population.compute([0, 0.01, 0, 0.02, 0.02, 0.40], [1, 0.8]);  # I expected someting like: [1, 0.8]
+exit(1);

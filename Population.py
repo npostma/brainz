@@ -28,11 +28,16 @@ class Population:
         # Let the whole population compute the same data
         for (brainNr, brain) in enumerate(self.brains):
             brain.compute(inputData);
-            print(self.fitness(brain, expectedOutputData));
+            brain.fitness = self.fitness(brain, expectedOutputData);
         print('');
 
     def clone(self):
         return copy.deepcopy(self);
+
+    def showFitness(self):
+        for (brainNr, brain) in enumerate(self.brains):
+            print (str(brain.fitness));
+        print('');
 
     # Every couple will create 2 children with there neighbour brain on a given moment.
     def breed(self):
@@ -41,7 +46,9 @@ class Population:
 
         numberOfBrains = len(self.brains);
 
-        # Todo: gene selection!!!!!!
+        # Sort brain on fitness. After Breeding with neighbours this will give the best 'result'
+        self.brains = sorted(self.brains, key=lambda brain: brain.fitness)
+
         for (brainNr, dadBrain) in enumerate(self.brains):
             # As long as we can find a mother brain
             # Note: For now a bit strange but for every step the mom becomes the dad :-D

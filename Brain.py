@@ -18,6 +18,9 @@ class Brain:
     learningRate = 0.3;
     # Todo: Some value for computing. Find out what its good for
     learningMomentum = 0.9;
+    # Keep track of the fitness score. Used for sorting the population
+    fitness = 99;
+
 
     def __init__(self, genome = None):
         # Rule of thumb to determine wich size the neural network sould have
