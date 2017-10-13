@@ -126,7 +126,7 @@ class Brain:
         # Recalculate the weight based on the gradient
         for(layerNr, layer) in enumerate(self.layers):
             for(neuronNr, neuron) in enumerate(layer.neurons):
-                neuron.bias = self.learningRate * neuron.delta;
+                neuron.bias += self.learningRate * neuron.delta;
 
                 if(layerNr > 0):
                     previousLayer = self.layers[layerNr-1];
