@@ -8,6 +8,11 @@ class Visualize:
     def __init__(self, brain):
         self.brain = brain;
 
+    def showOutput(self):
+        for value in self.brain.getOutput():
+            print str(value);
+        print('');
+
     def show(self):
         self.showValues();
 

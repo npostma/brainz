@@ -30,6 +30,10 @@ class Brain:
 
         self.createLayers();
 
+    def getOutput(self):
+        # Return the output layer
+        return map(lambda neuron: neuron.value, self.layers[len(self.layers) - 1].neurons);
+
     def createLayers(self):
         self.layers = [];
         for i in range(0, self.numLayers):
@@ -86,9 +90,6 @@ class Brain:
                 value = reduce(fsum, values);
                 neuron.value = self.sigmoid(value);
 
-        # Return the output layer
-        return map(lambda neuron: neuron.value, self.layers[len(self.layers) - 1].neurons);
-
     def learn(self, inputData, outputData):
 
         f = lambda a, b: a + b;
@@ -144,7 +145,6 @@ class Brain:
 
     def sigmoid(self, value):
         return 1 / (1 + math.exp(-value));
-        #return (1 / (1 + (((-1 * value) / 1) ** 2)));
 
 
 
