@@ -2,7 +2,7 @@ import Brain
 import Cell
 import math
 import MRI
-
+import random
 
 class Population:
     # Number of brains in this population
@@ -72,13 +72,27 @@ class Population:
 
     def crossover(self, motherGenome, dadGenome):
         children = []
-        # Todo: Some kind of mutation
+
         genomeLength = len(motherGenome)
-        partOneLength = int(math.floor(genomeLength * 0.3))
+        # A random spit. Random gives us a number between 0 and 1. So it can be used as a percentage of the length
+        randomNumber = random.random()
+        partOneLength = int(math.floor(genomeLength * randomNumber))
         partTwoLength = int(genomeLength - partOneLength)
 
         daughter = motherGenome[0:partOneLength] + dadGenome[partOneLength:genomeLength]
         son = motherGenome[0:partTwoLength] + dadGenome[partTwoLength:genomeLength]
+
+        # Mutation part. What am I trying to do? (No clue wichs values, thats the fun part to analyze) so
+        # - Determine how many cells are mutated this is between 0 and 5 percen
+        # - Select random cells to mutate
+        # - Dermine how big the weights of the cells are mutated. This will be somewhere between -5 and 5%
+        numberOfCellsToMutate = int(random.random() * 5)
+        mutationRate = random.uniform(-0.05, 0.05);
+
+        for(i) in range(0, numberOfCellsToMutate):
+            cellnumber = int(random.uniform(0, genomeLength));
+            daughter[cellnumber].weight *= mutationRate;
+            son[cellnumber].weight *= mutationRate;
 
         children.append(son)
         children.append(daughter)

@@ -27,7 +27,10 @@ class Brain:
     # Keep track of the fitness score. Used for sorting the population
     fitness = 99
 
-    def __init__(self, genome=None):
+    def __init__(self, inputSize=6, outputSize=2, genome=None):
+        self.inputSize = inputSize;
+        self.outputSize = outputSize;
+
         # Rule of thumb to determine wich size the neural network sould have
         if (self.inputSize > self.outputSize):
             self.hiddenSize = self.inputSize

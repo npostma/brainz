@@ -4,7 +4,7 @@ import datetime
 start = datetime.datetime.now()
 
 def trainPopulation(population):
-    for (index) in range(0, 100):
+    for (index) in range(0, 10):
         # visual.show() # Show can be placed after every learn or compute to show output the Population.
         # Traning set 0, No shipment and some order changes: Order won't go to the accountant. Order does not get changed anymore
         population.learn([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3])
@@ -26,33 +26,26 @@ def trainPopulation(population):
         population.learn([0, 0.01, 0, 0.04, 0.00, 0.02], [0, 0.4])
 
 # Create a random population
-population = Population.Population()
-
+originalPopulation = Population.Population()
 #Train them
-trainPopulation(population)
-
+trainPopulation(originalPopulation)
 # Determine fitness
-population.compute([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3]) # I expected someting like: [0, 0.3]
+originalPopulation.compute([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3]) # I expected someting like: [0, 0.3]
 
-newPopulation = population.breed()
+nextGeneration = originalPopulation;
+for(generationNr) in range(1, 10) :
+    nextGeneration = nextGeneration.breed()
 
-#Train them
-trainPopulation(newPopulation)
+    #Train them
+    trainPopulation(nextGeneration)
+    # Determine fitness
+    nextGeneration.compute([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3]) # I expected someting like: [0, 0.3]
 
-newPopulation.compute([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3]) # I expected someting like: [0, 0.3]
+    thirdGeneration = nextGeneration.breed()
+    print('===============================GENERATION ' + str(generationNr) + '================================')
+    nextGeneration.showOutput()
 
-newestPopulation = newPopulation.breed()
-#Train them
-trainPopulation(newestPopulation)
 
-newestPopulation.compute([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3]) # I expected someting like: [0, 0.3]
-
-print('===============================POPULATION 1================================')
-population.showOutput()
-print('===============================POPULATION 2================================')
-newPopulation.showOutput()
-print('===============================POPULATION 3================================')
-newestPopulation.showOutput()
 
 
 end = datetime.datetime.now()
