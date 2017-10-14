@@ -1,11 +1,12 @@
 class Layer:
-    neurons = [];
+    # Collection of neurons
+    neurons = []
 
     def __init__(self):
-        self.neurons = [];
+        self.neurons = []
 
     def addNeuron(self, neuron):
-        self.neurons.append(neuron);
+        self.neurons.append(neuron)
 
     def size(self):
-        return len(self.neurons);
+        return len(self.neurons)
