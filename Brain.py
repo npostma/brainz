@@ -33,10 +33,10 @@ class Brain:
 
         # Rule of thumb to determine wich size the neural network sould have
         if (self.inputSize > self.outputSize):
-            self.hiddenSize = self.inputSize
+            self.hiddenSize = self.inputSize + 3
             self.numLayers = max(self.inputSize - self.outputSize, 3)
         else:
-            self.hiddenSize = self.outputSize
+            self.hiddenSize = self.outputSize  + 3
             self.numLayers = max(self.outputSize - self.inputSize, 3)
 
         self.createLayers()
@@ -159,7 +159,8 @@ class Brain:
         return value * (1 - value) * (expected - value)
 
     def sigmoid(self, value):
-        return 1 / (1 + math.exp(-value))
+        # return 1 / (1 + math.exp(-value))
+        return 1 / (1 + math.exp((-1 * value) / 1))
 
     def measureFitness(self, expectedOutputData):
         # Determine the fitness for now by hand. So I give it a expected output. This wil NOT be used for learning but to determine how good the brain has become
