@@ -2,6 +2,8 @@ import Brain
 import random
 import MRI;
 
+# This is not realy working. I think i need to much Q & A to get any result.
+
 userName = raw_input("Hi I am your househelp. I will keep you comfortable. What is your name? \n")
 
 # [Statement, Min, Max, roundingOnDecimals]

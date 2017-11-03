@@ -11,8 +11,7 @@ brain = Brain.Brain()
 visual = MRI.MRI(brain)
 
 try:
-    for (index) in range(0, 500):
-        #visual.show() # Show can be placed after every learn or compute to show output the brain.
+    for (index) in range(0, 2500):
         # Traning set 0, No shipment and some order changes: Order won't go to the accountant. Order does not get changed anymore
         brain.learn([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3])
         # Training set 1, unsure: Order won't go to the accountant. Order does get changed anymore
@@ -47,10 +46,13 @@ brain.compute([1, 0.03, 0, 0.15, 0.80, 0.40]) # I expected someting like: [0, 0.
 brain.measureFitness([0, 0.5])
 visual.showOutput()
 
-brain.compute([0, 0.01, 0, 0.02, 0.02, 0.40])  # I expected someting like: [1, 0.8]
+brain.compute([0, 0.01, 0, 0.02, 0.02, 0.04])  # I expected someting like: [0, 0.8]
 brain.measureFitness([0, 0.8])
 visual.showOutput()
 
+brain.compute([1, 0.02, 0, 0.00, 0.00, 0.00])  # I expected someting like: [1, 0.8]
+brain.measureFitness([1, 0.8])
+visual.showOutput()
 
 end = datetime.datetime.now()
 print('Duration:' + str(end-start))

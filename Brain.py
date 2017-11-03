@@ -2,7 +2,6 @@ import math
 import Layer
 import Neuron
 
-
 class Brain:
     layers = []
 
@@ -32,11 +31,13 @@ class Brain:
         self.outputSize = outputSize;
 
         # Rule of thumb to determine wich size the neural network sould have
+        # https://chatbotslife.com/machine-learning-for-dummies-part-2-270165fc1700
+        # Adding one extra neuron to the layer based on the rule of thumb gives better/accurate results. TODO: Find out why
         if (self.inputSize > self.outputSize):
-            self.hiddenSize = self.inputSize + 3
+            self.hiddenSize = self.inputSize + 1
             self.numLayers = max(self.inputSize - self.outputSize, 3)
         else:
-            self.hiddenSize = self.outputSize  + 3
+            self.hiddenSize = self.outputSize + 1
             self.numLayers = max(self.outputSize - self.inputSize, 3)
 
         self.createLayers()

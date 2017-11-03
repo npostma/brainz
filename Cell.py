@@ -1,4 +1,6 @@
+
 class Cell:
+
     # X can be seen as layerNr.
     x = 0
 

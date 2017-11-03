@@ -9,7 +9,7 @@ Measure/Analyze user behavior before he sends an order to the accountant. Try to
 ### Input:
 Input before of a user sends his order to the accountant
 - 1: Order payed (1 or 0)
-- 2: Number of how many times the status of the order gets changed (Normal system usage will give us a number between 0 and 10 but higher values are posible)
+- 2: Number of how many times the status of the order gets changed (Normal system usage will give us a number between 0 and 0.1 but higher values are posible)
 - 3: Order send to 3th party shipping (1 or 0)
 - 4: Number of how many times the order has changed Name,Address,Postal data (Normal system usage will give us a number between 0 and 0.1. 1 change = 0.01. 1 means 100 times (max))
 - 5: Number of how many times the order has changed order rows (Normal system usage will give us a number between 0 and 0.1. 1 change = 0.01. 1 means 100 times (max))

@@ -45,9 +45,6 @@ for(generationNr) in range(1, 10) :
     print('===============================GENERATION ' + str(generationNr) + '================================')
     nextGeneration.showOutput()
 
-
-
-
 end = datetime.datetime.now()
 print('Duration:' + str(end-start))
 exit(1)
