@@ -1,5 +1,6 @@
-import Population
 import datetime
+
+from AI import Population
 
 start = datetime.datetime.now()
 

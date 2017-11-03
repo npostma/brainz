@@ -1,8 +1,10 @@
+import math
+import random
+
 import Brain
 import Cell
-import math
 import MRI
-import random
+
 
 class Population:
     # Number of brains in this population

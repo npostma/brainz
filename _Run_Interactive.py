@@ -1,6 +1,7 @@
-import Brain
 import random
-import MRI;
+
+from MRI import CLI
+from AI import Brain
 
 # This is not realy working. I think i need to much Q & A to get any result.
 
@@ -22,7 +23,7 @@ outputDefinition.append(['I will open the door to the garden', 0.5]); # If outpu
 
 brain = Brain.Brain(len(inputDefinition), len(outputDefinition))
 
-MRI = MRI.MRI(brain);
+MRI = CLI.CLI(brain);
 MRI.show();
 
 successCounter = 0

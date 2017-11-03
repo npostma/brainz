@@ -1,6 +1,8 @@
 import math
+
 import Layer
 import Neuron
+
 
 class Brain:
     layers = []

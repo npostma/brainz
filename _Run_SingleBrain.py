@@ -1,6 +1,7 @@
-import Brain
-import MRI
 import datetime
+
+from MRI import CLI
+from AI import Brain
 
 start = datetime.datetime.now()
 
@@ -8,7 +9,7 @@ start = datetime.datetime.now()
 brain = Brain.Brain()
 
 # Class for printing our brain whenever we want (debugging, use visual.show() for printing the brain in its current state)
-visual = MRI.MRI(brain)
+visual = CLI.CLI(brain)
 
 try:
     for (index) in range(0, 2500):
