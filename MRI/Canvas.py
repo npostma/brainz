@@ -6,9 +6,9 @@ from Drawable import Point
 
 class Canvas(QWidget):
 
-    points = list;
+    points = list();
 
-    rects = list;
+    rectangles = list();
 
     heightMap = {};
 
@@ -33,8 +33,12 @@ class Canvas(QWidget):
     def addPoint(self, point=Point):
         self.points.append(point)
 
-    def addRect(self, rect):
-        self.rects.append(rect)
+    def addRectangle(self, rect):
+        self.rectangles.append(rect)
+
+    def addRectanges(self, rectangles):
+        for(i, rectangle) in enumerate(rectangles):
+            self.addRectangle(rectangle)
 
     def paintEvent(self, event):
         painter = QPainter()
@@ -43,7 +47,7 @@ class Canvas(QWidget):
         for (pointNr, point) in enumerate(self.points):
             self.drawPoint(painter, point)
 
-        for (rectNr, rect) in enumerate(self.rects):
+        for (rectNr, rect) in enumerate(self.rectangles):
             self.drawRect(painter, rect)
 
         painter.end()
