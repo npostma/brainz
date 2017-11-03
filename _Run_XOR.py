@@ -10,7 +10,7 @@ brain = Brain.Brain(2, 1)
 # Class for printing our brain whenever we want (debugging, use visual.show() for printing the brain in its current state)
 visual = MRI.MRI(brain)
 visual.show();
-#test
+#test2
 try:
     for (index) in range(0, 2500):
         brain.learn([0, 0], [0])
