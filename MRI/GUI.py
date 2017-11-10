@@ -29,7 +29,6 @@ class GUI:
 
         self.brain = brain
         self.canvas = canvas
-        self.reset()
 
         self.createStaticDrawables()
 
@@ -38,35 +37,37 @@ class GUI:
 
         self.canvas.reset()
         self.canvas.addRectanges(self.rectangles)
-        self.canvas.addLines(self.lines)
+        self.canvas.addLines(self.getLines())
         self.canvas.addStrings(self.getStrings())
         self.canvas.repaint()
-
-    def reset(self):
-        self.lines = list()
 
 
     def getRectangles(self):
         return self.rectangles
 
     def getLines(self):
-        return self.lines
+        lines = list();
+        for (x, lineListX) in enumerate(self.lines):
+            for (y, lineListY) in enumerate(lineListX):
+                for (z, line) in enumerate(lineListY):
+                    lines.append(line)
+        return lines
 
     def getStrings(self):
         strings = list()
-        for (i, stringList) in enumerate(self.strings):
-            for (j, string) in enumerate(stringList):
+        for (x, stringList) in enumerate(self.strings):
+            for (y, string) in enumerate(stringList):
                 strings.append(string)
 
         return strings
 
     def updateDynamicDrawables(self):
-        self.reset()
-        self.createLines()
         self.createStrings()
+        self.updateLines()
 
     def createStaticDrawables(self):
         self.createRectangles()
+        self.createLines()
 
     def createStrings(self):
         for (layerNr, layer) in enumerate(self.brain.layers):
@@ -139,8 +140,17 @@ class GUI:
 
     def createLines(self):
         for (layerNr, layer) in enumerate(self.brain.layers):
+
+            if (layerNr >= len(self.lines)):
+                self.lines.insert(layerNr, [])
+
             for (neuronNr, neuron) in enumerate(layer.neurons):
+
+                if (neuronNr >= len(self.lines[layerNr])):
+                    self.lines[layerNr].insert(neuronNr, [])
+
                 for (weightNr, weight) in enumerate(neuron.weights):
+
                     xA = layerNr - 1
                     yA = weightNr
 
@@ -150,4 +160,10 @@ class GUI:
                     line = Line.Line(self.points[xA][yA], self.points[xB][yB])
                     line.setWeight(weight)
 
-                    self.lines.append(line)
+                    self.lines[layerNr][neuronNr].insert(weightNr, line)
+
+    def updateLines(self):
+        for (layerNr, layer) in enumerate(self.brain.layers):
+            for (neuronNr, neuron) in enumerate(layer.neurons):
+                for (weightNr, weight) in enumerate(neuron.weights):
+                    self.lines[layerNr][neuronNr][weightNr].setWeight(weight)
