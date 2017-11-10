@@ -37,10 +37,10 @@ class Brain:
         # Adding one extra neuron to the layer based on the rule of thumb gives better/accurate results. TODO: Find out why
         if (self.inputSize > self.outputSize):
             self.hiddenSize = self.inputSize + 1
-            self.numLayers = max(self.inputSize - self.outputSize, 3)
+            self.numLayers = max(self.inputSize - self.outputSize, 3) + 1
         else:
             self.hiddenSize = self.outputSize + 1
-            self.numLayers = max(self.outputSize - self.inputSize, 3)
+            self.numLayers = max(self.outputSize - self.inputSize, 3) + 1
 
         self.createLayers()
 
