@@ -61,8 +61,6 @@ class Panel(QWidget):
 
         self.setLayout(formGrid)
 
-        self.show()
-
 
     def SubmitClicked(self):
         data = []

@@ -11,10 +11,14 @@ class PanelDock(QDockWidget):
 
         self.panel = Panel.Panel(brain)
 
-        self.setupLayout()
-
     def setupLayout(self):
         self.panel.setupLayout()
+
+
+
+        self.panel.move(0, 0)
+        self.panel.resize(1600, 800)
+        self.panel.show()
 
     def update(self):
         self.panel.update()
