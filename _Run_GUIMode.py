@@ -2,14 +2,14 @@ import sys, time
 from PyQt4 import QtGui
 
 from Drawable import Label, Point
-from MRI import GUI, Canvas
+from MRI import Panel, Canvas
 from AI import Brain
 
 brain = Brain.Brain(9, 3)
 app = QtGui.QApplication(sys.argv)
 
 canvas = Canvas.Canvas()
-gui = GUI.GUI(brain, canvas)
+gui = Panel.Panel(brain, canvas)
 
 for (index) in range(0, 1000):
     # Traning set 0, No shipment and some order changes: Order won't go to the accountant. Order does not get changed anymore

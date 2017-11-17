@@ -4,7 +4,7 @@ from Drawable import Rectangle, Point, Line, Label
 
 
 # Convert brain into a set of drawable objects
-class GUI(QWidget):
+class Panel(QWidget):
     # Instance of the brain to scan
     brain = None
 
@@ -22,7 +22,7 @@ class GUI(QWidget):
     canvas = None
 
     def __init__(self, brain, canvas):
-        super(GUI, self).__init__()
+        super(Panel, self).__init__()
         # Static drawables
         self.rectangles = list()
         self.points = list()
