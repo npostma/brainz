@@ -1,33 +1,26 @@
 import sys
 from PyQt4 import QtGui
 
-from MRI import PanelDock, Window
-from AI import Brain
-
-brain = Brain.Brain(2, 1)
-brain2 = Brain.Brain(2, 1)
+from MRI import Window
+from AI import  Population
 
 app = QtGui.QApplication(sys.argv)
-panelDock = PanelDock.PanelDock(brain)
-panelDock2 = PanelDock.PanelDock(brain2)
 
 mainWindow = Window.Window()
 
-mainWindow.addDockablePanel(panelDock);
-mainWindow.addDockablePanel(panelDock2);
+population = Population.Population(2, 1, 5)
+
+mainWindow.setPopulation(population)
+
+
+
 mainWindow.setupLayout();
 
-for (index) in range(0, 2500):
-    brain.learn([0, 0], [0])
-    brain.learn([1, 0], [1])
-    brain.learn([0, 1], [1])
-    brain.learn([1, 1], [0])
-
-    brain2.learn([0, 0], [0])
-    brain2.learn([1, 0], [1])
-    brain2.learn([0, 1], [1])
-    brain2.learn([1, 1], [0])
-
+for (index) in range(0, 500):
+    population.learn([0, 0], [0])
+    population.learn([1, 0], [1])
+    population.learn([0, 1], [1])
+    population.learn([1, 1], [0])
 
     mainWindow.update()
 

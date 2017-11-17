@@ -28,7 +28,7 @@ class Brain:
     # Keep track of the fitness score. Used for sorting the population
     fitness = 99
 
-    def __init__(self, inputSize=6, outputSize=2, genome=None):
+    def __init__(self, inputSize=6, outputSize=2):
         self.inputSize = inputSize
         self.outputSize = outputSize
 
@@ -44,9 +44,14 @@ class Brain:
 
         self.createLayers()
 
+    @staticmethod
+    def fromGenome(genome, inputSize=6, outputSize=2):
+        brain = Brain(inputSize, outputSize)
+
         if (genome != None):
             for (cellNr, cell) in enumerate(genome):
-                self.layers[cell.x].neurons[cell.y].weights[cell.z] = cell.weight
+                brain.layers[cell.x].neurons[cell.y].weights[cell.z] = cell.weight
+        return brain
 
     def getOutput(self):
         # Return the output layer

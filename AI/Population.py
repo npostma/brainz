@@ -10,17 +10,32 @@ class Population:
     # Number of brains in this population
     populationSize = 12
 
+    inputSize = 0
+
+    outputSize = 0
+
+
+
     brains = list()
 
-    def __init__(self, brains=None):
+    def __init__(self, inputSize=6, outputSize=2, populationSize = 2):
         self.brains = list()
 
-        if (brains == None):
-            for i in range(0, self.populationSize):
-                self.brains.append(Brain.Brain())
-        else:
-            self.brains = brains
-            self.populationSize = len(brains)
+        self.inputSize = inputSize
+        self.outputSize = outputSize
+        self.populationSize = populationSize
+
+        for i in range(0, self.populationSize):
+            self.brains.append(Brain.Brain(inputSize, outputSize))
+
+    @staticmethod
+    def fromBrains(brains, inputSize=6, outputSize=2):
+        population = Population()
+        population.brains = brains
+        population.populationSize = len(brains)
+        population.inputSize = inputSize
+        population.outputSize = outputSize
+        return population
 
     def learn(self, inputData, outputData):
         # Let the whole population learn the same data
@@ -67,10 +82,10 @@ class Population:
 
         # Convert the genomes back to brains so that we can let them crunch numbers
         for (genomeNr, genome) in enumerate(childGenomes):
-            childBrain = Brain.Brain(genome)
+            childBrain = Brain.Brain.fromGenome(genome, self.inputSize, self.outputSize)
             childPopulation.append(childBrain)
 
-        return self.__class__(childPopulation)
+        return Population.fromBrains(childPopulation, self.inputSize, self.outputSize)
 
     def crossover(self, motherGenome, dadGenome):
         children = list()
