@@ -1,8 +1,10 @@
+from PyQt4.QtGui import *
+
 from Drawable import Rectangle, Point, Line, Label
 
 
 # Convert brain into a set of drawable objects
-class GUI:
+class GUI(QWidget):
     # Instance of the brain to scan
     brain = None
 
@@ -15,10 +17,12 @@ class GUI:
 
     strings = list()
 
+    inputs = list()
+
     canvas = None
 
     def __init__(self, brain, canvas):
-
+        super(GUI, self).__init__()
         # Static drawables
         self.rectangles = list()
         self.points = list()
@@ -31,6 +35,42 @@ class GUI:
         self.canvas = canvas
 
         self.createStaticDrawables()
+
+        self.setupLayout(brain.inputSize)
+
+    def setupLayout(self, numberOfInputs):
+        formGrid = QGridLayout()
+
+        submit = QPushButton()
+        submit.clicked.connect(self.SubmitClicked)
+        submit.setText("Compute")
+
+        lastIndex = 0;
+        for(i) in range(0, numberOfInputs):
+            decimalInput = QLineEdit()
+            self.inputs.append(decimalInput)
+            decimalInput.setValidator(QDoubleValidator(0.99, 9.99, 2))
+            formGrid.addWidget(decimalInput, 1, i)
+            lastIndex = i
+
+        lastIndex += 1
+
+        formGrid.addWidget(submit, 1, lastIndex)
+
+        formGrid.addWidget(self.canvas, 0, 0, 1, lastIndex)
+
+        self.setLayout(formGrid)
+
+        self.show()
+
+
+    def SubmitClicked(self):
+        data = []
+        for(i, input) in enumerate(self.inputs):
+            data.append(float(input.text()))
+
+        self.brain.compute(data)
+        self.update()
 
     def update(self):
         self.updateDynamicDrawables()

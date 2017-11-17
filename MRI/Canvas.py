@@ -22,7 +22,6 @@ class Canvas(QWidget):
 
         self.reset()
 
-        self.show()
 
     def reset(self):
         self.rectangles = list()
@@ -32,8 +31,6 @@ class Canvas(QWidget):
         self.lines = list()
 
         self.strings = list()
-
-        self.resize(1400, 800)
 
     def registerY(self, x):
         if x in self.heightMap:
