@@ -2,8 +2,10 @@ from PyQt4.QtGui import *
 
 from Drawable import Rectangle, Point, Line, Label
 
-
 # Convert brain into a set of drawable objects
+from MRI import Canvas
+
+
 class Panel(QWidget):
     # Instance of the brain to scan
     brain = None
@@ -21,7 +23,7 @@ class Panel(QWidget):
 
     canvas = None
 
-    def __init__(self, brain, canvas):
+    def __init__(self, brain):
         super(Panel, self).__init__()
         # Static drawables
         self.rectangles = list()
@@ -32,13 +34,11 @@ class Panel(QWidget):
         self.strings = list();
 
         self.brain = brain
-        self.canvas = canvas
+        self.canvas = Canvas.Canvas()
 
         self.createStaticDrawables()
 
-        self.setupLayout(brain.inputSize)
-
-    def setupLayout(self, numberOfInputs):
+    def setupLayout(self):
         formGrid = QGridLayout()
 
         submit = QPushButton()
@@ -46,7 +46,7 @@ class Panel(QWidget):
         submit.setText("Compute")
 
         lastIndex = 0;
-        for(i) in range(0, numberOfInputs):
+        for(i) in range(0, self.brain.inputSize):
             decimalInput = QLineEdit()
             self.inputs.append(decimalInput)
             decimalInput.setValidator(QDoubleValidator(0.99, 9.99, 2))
