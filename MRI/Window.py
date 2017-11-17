@@ -1,3 +1,4 @@
+from PyQt4.QtCore import Qt
 from PyQt4.QtGui import *
 
 # Dockable wrapper for panel
@@ -15,6 +16,11 @@ class Window(QMainWindow):
     def setupLayout(self):
         for(i, dockablePanel) in enumerate(self.dockablePanels):
             dockablePanel.setupLayout()
+            self.addDockWidget(Qt.LeftDockWidgetArea  , dockablePanel)
+
+        self.move(0, 0)
+        self.resize(1600, 800)
+        self.show()
 
     def update(self):
         for (i, dockablePanel) in enumerate(self.dockablePanels):

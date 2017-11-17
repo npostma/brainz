@@ -7,10 +7,9 @@ from AI import Brain
 brain = Brain.Brain(2, 1)
 app = QtGui.QApplication(sys.argv)
 panelDock = PanelDock.PanelDock(brain)
-panelDock.setupLayout()
 mainWindow = Window.Window(panelDock)
 
-for (index) in range(0, 2500):
+for (index) in range(0, 5000):
     brain.learn([0, 0], [0])
     brain.learn([1, 0], [1])
     brain.learn([0, 1], [1])

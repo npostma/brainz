@@ -65,6 +65,7 @@ class Panel(QWidget):
     def SubmitClicked(self):
         data = []
         for(i, input) in enumerate(self.inputs):
+            print("a" + input.text());
             data.append(float(input.text()))
 
         self.brain.compute(data)
