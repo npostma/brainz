@@ -13,11 +13,14 @@ class Window(QMainWindow):
 
     activePopulation = None
 
-    def __init__(self):
+    mainApplication = None
+
+    def __init__(self, mainApplication):
         super(Window, self).__init__()
         self.dockablePanels = list()
         self.initialized = False
         self.activePopulation = None
+        self.mainApplication = mainApplication
 
     def addDockablePanel(self, dockablePanel):
         self.dockablePanels.append(dockablePanel)
@@ -34,10 +37,16 @@ class Window(QMainWindow):
         closeApplication.triggered.connect(self.closeApplication)
 
         breedPopulation = QAction("&Breed!!!", self)
-        breedPopulation.setShortcut("Ctrl+Q")
-        breedPopulation.setStatusTip('Leave The App')
+        breedPopulation.setShortcut("Ctrl+B")
+        breedPopulation.setStatusTip('Crossover the networks in the current active population')
         # Todo: make some cool interface for this.
         breedPopulation.triggered.connect(self.breedPopulation)
+
+        teachPopulation = QAction("&Learn some ...", self)
+        teachPopulation.setShortcut("Ctrl+L")
+        teachPopulation.setStatusTip('Do some more learning iterations for the current population')
+        # Todo: make some cool interface for this.
+        teachPopulation.triggered.connect(self.teachPopulation)
 
         self.statusBar()
 
@@ -47,13 +56,29 @@ class Window(QMainWindow):
 
         fileMenu = mainMenu.addMenu('&Population')
         fileMenu.addAction(breedPopulation)
+        fileMenu.addAction(teachPopulation)
 
         self.setWindowState(Qt.WindowFullScreen)
+
+        self.setWindowTitle("Taking over the world is the new hello world *EvIl LaUgHteR")
 
         self.move(0, 0)
         self.show()
 
         self.initialized = True
+
+    def teachPopulation(self):
+
+        for (index) in range(0, 500):
+            self.activePopulation.learn([0, 0], [0])
+            self.activePopulation.learn([1, 0], [1])
+            self.activePopulation.learn([0, 1], [1])
+            self.activePopulation.learn([1, 1], [0])
+
+            self.update()
+
+            # Prevent main application from freezing!
+            self.mainApplication.processEvents()
 
     def breedPopulation(self):
         newPopulation = self.activePopulation.breed()
