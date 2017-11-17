@@ -25,16 +25,18 @@ class Panel(QWidget):
 
     def __init__(self, brain):
         super(Panel, self).__init__()
+
+        self.brain = brain
+        self.canvas = Canvas.Canvas()
+        self.inputs = list()
+
         # Static drawables
         self.rectangles = list()
         self.points = list()
 
         # Dynmic drawables
-        self.lines = list();
-        self.strings = list();
-
-        self.brain = brain
-        self.canvas = Canvas.Canvas()
+        self.lines = list()
+        self.strings = list()
 
         self.createStaticDrawables()
 
@@ -45,8 +47,8 @@ class Panel(QWidget):
         submit.clicked.connect(self.SubmitClicked)
         submit.setText("Compute")
 
-        lastIndex = 0;
-        for(i) in range(0, self.brain.inputSize):
+        lastIndex = 0
+        for (i) in range(0, self.brain.inputSize):
             decimalInput = QLineEdit()
             self.inputs.append(decimalInput)
             decimalInput.setValidator(QDoubleValidator(0.99, 9.99, 2))
@@ -61,11 +63,9 @@ class Panel(QWidget):
 
         self.setLayout(formGrid)
 
-
     def SubmitClicked(self):
-        data = []
-        for(i, input) in enumerate(self.inputs):
-            print("a" + input.text());
+        data = list()
+        for (i, input) in enumerate(self.inputs):
             data.append(float(input.text()))
 
         self.brain.compute(data)
@@ -80,12 +80,11 @@ class Panel(QWidget):
         self.canvas.addStrings(self.getStrings())
         self.canvas.repaint()
 
-
     def getRectangles(self):
         return self.rectangles
 
     def getLines(self):
-        lines = list();
+        lines = list()
         for (x, lineListX) in enumerate(self.lines):
             for (y, lineListY) in enumerate(lineListX):
                 for (z, line) in enumerate(lineListY):
@@ -112,7 +111,7 @@ class Panel(QWidget):
         for (layerNr, layer) in enumerate(self.brain.layers):
 
             if (layerNr >= len(self.strings)):
-                self.strings.insert(layerNr, [])
+                self.strings.insert(layerNr, list())
 
             for (neuronNr, neuron) in enumerate(layer.neurons):
                 centerPoint = self.points[layerNr][neuronNr]
@@ -120,8 +119,10 @@ class Panel(QWidget):
                 # TODO: If this is faster then removing / creating then rewrite for Rect/Lines
                 # TODO: Implement metrics to prove performance improvements
                 if (neuronNr >= len(self.strings[layerNr])):
+                    # self.strings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.absoluteValue)))
                     self.strings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.value)))
                 else:
+                    # self.strings[layerNr][neuronNr] = Label.Label(centerPoint, str(neuron.absoluteValue))
                     self.strings[layerNr][neuronNr] = Label.Label(centerPoint, str(neuron.value))
 
     def createRectangles(self):
@@ -157,7 +158,7 @@ class Panel(QWidget):
             )
 
             if (layerNr >= len(self.points)):
-                self.points.insert(layerNr, [])
+                self.points.insert(layerNr, list())
 
             self.rectangles.append(rect)
 
@@ -181,15 +182,14 @@ class Panel(QWidget):
         for (layerNr, layer) in enumerate(self.brain.layers):
 
             if (layerNr >= len(self.lines)):
-                self.lines.insert(layerNr, [])
+                self.lines.insert(layerNr, list())
 
             for (neuronNr, neuron) in enumerate(layer.neurons):
 
                 if (neuronNr >= len(self.lines[layerNr])):
-                    self.lines[layerNr].insert(neuronNr, [])
+                    self.lines[layerNr].insert(neuronNr, list())
 
                 for (weightNr, weight) in enumerate(neuron.weights):
-
                     xA = layerNr - 1
                     yA = weightNr
 

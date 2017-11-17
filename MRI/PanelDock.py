@@ -1,6 +1,7 @@
 from PyQt4.QtGui import *
 from MRI import Panel
 
+
 # Dockable wrapper for panel
 class PanelDock(QDockWidget):
     # Instance of the internal panel

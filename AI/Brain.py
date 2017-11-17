@@ -5,7 +5,7 @@ import Neuron
 
 
 class Brain:
-    layers = []
+    layers = list()
 
     # Number of neurons for the input layer
     inputSize = 6
@@ -29,8 +29,8 @@ class Brain:
     fitness = 99
 
     def __init__(self, inputSize=6, outputSize=2, genome=None):
-        self.inputSize = inputSize;
-        self.outputSize = outputSize;
+        self.inputSize = inputSize
+        self.outputSize = outputSize
 
         # Rule of thumb to determine wich size the neural network sould have
         # https://chatbotslife.com/machine-learning-for-dummies-part-2-270165fc1700
@@ -53,7 +53,7 @@ class Brain:
         return map(lambda neuron: neuron.value, self.layers[len(self.layers) - 1].neurons)
 
     def createLayers(self):
-        self.layers = []
+        self.layers = list()
         for i in range(0, self.numLayers):
             # Every layer is a collection of neurons
             layer = Layer.Layer()
@@ -100,13 +100,14 @@ class Brain:
             # Loop through the neurons in the current layer
             for (neuronNr, neuron) in enumerate(self.layers[i].neurons):
 
-                values = []
+                values = list()
                 for (neuronNrPrevLayer, neuronPrevLayer) in enumerate(previousLayer.neurons):
                     # The value of eachs previous neuron multiplied with the weight in the current layer
                     # This value will be stored in the current neuron. This way the value will traverse through our network
                     values.append(neuronPrevLayer.value * neuron.weights[neuronNrPrevLayer])
 
                 value = reduce(fsum, values)
+                neuron.absoluteValue = value
                 neuron.value = self.sigmoid(value)
 
     def learn(self, inputData, outputData):
@@ -134,7 +135,7 @@ class Brain:
 
             for (neuronNr, neuron) in enumerate(self.layers[layerNr].neurons):
 
-                deltas = []
+                deltas = list()
                 for (nextNeuronNr, nextNeuron) in enumerate(nextLayer.neurons):
                     delta = nextNeuron.delta * nextNeuron.weights[neuronNr]
                     deltas.append(delta)

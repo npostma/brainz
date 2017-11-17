@@ -10,7 +10,7 @@ class Population:
     # Number of brains in this population
     populationSize = 12
 
-    brains = []
+    brains = list()
 
     def __init__(self, brains=None):
         self.brains = list()
@@ -45,8 +45,8 @@ class Population:
 
     # Every couple will create 2 children with there neighbour brain on a given moment.
     def breed(self):
-        childGenomes = []
-        childPopulation = []
+        childGenomes = list()
+        childPopulation = list()
 
         numberOfBrains = len(self.brains)
 
@@ -73,7 +73,7 @@ class Population:
         return self.__class__(childPopulation)
 
     def crossover(self, motherGenome, dadGenome):
-        children = []
+        children = list()
 
         genomeLength = len(motherGenome)
         # A random spit. Random gives us a number between 0 and 1. So it can be used as a percentage of the length
@@ -89,12 +89,12 @@ class Population:
         # - Select random cells to mutate
         # - Dermine how big the weights of the cells are mutated. This will be somewhere between -5 and 5%
         numberOfCellsToMutate = int(random.random() * 5)
-        mutationRate = random.uniform(-0.05, 0.05);
+        mutationRate = random.uniform(-0.05, 0.05)
 
         for(i) in range(0, numberOfCellsToMutate):
-            cellnumber = int(random.uniform(0, genomeLength));
-            daughter[cellnumber].weight *= mutationRate;
-            son[cellnumber].weight *= mutationRate;
+            cellnumber = int(random.uniform(0, genomeLength))
+            daughter[cellnumber].weight *= mutationRate
+            son[cellnumber].weight *= mutationRate
 
         children.append(son)
         children.append(daughter)

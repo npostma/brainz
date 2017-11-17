@@ -1,9 +1,9 @@
 class Layer:
     # Collection of neurons
-    neurons = []
+    neurons = list()
 
     def __init__(self):
-        self.neurons = []
+        self.neurons = list()
 
     def addNeuron(self, neuron):
         self.neurons.append(neuron)

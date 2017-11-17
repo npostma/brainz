@@ -6,13 +6,13 @@ from PyQt4.QtCore import *
 
 
 class Point(QPoint):
-    r = 0;
+    r = 0
 
-    g = 0;
+    g = 0
 
-    b = 0;
+    b = 0
 
-    a = 255;
+    a = 255
 
     def __init__(self, x, y):
         super(Point, self).__init__(x, y)

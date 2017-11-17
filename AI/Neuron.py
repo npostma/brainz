@@ -9,7 +9,10 @@ class Neuron:
     value = 0
 
     # Weight of the synapse
-    weights = []
+    weights = list()
+
+    # Gradient (NL: Helling)
+    gradient = list()
 
     # Delta
     delta = 0
@@ -17,16 +20,17 @@ class Neuron:
     # Bias
     bias = 0
 
-    # Gradient (NL: Helling)
-    gradient = []
+    # Value for testing purposes
+    absoluteValue = 0
 
     def __init__(self, numWeights, name):
 
         self.name = name
-
         self.value = random.uniform(-1, 1)
-
-        self.weights = []
+        self.weights = list()
+        self.gradient = list()
+        self.delta = 0
+        self.bias = 0
 
         for i in range(0, numWeights):
             self.weights.append(random.uniform(-1, 1))

@@ -8,7 +8,7 @@ from AI import Brain
 userName = raw_input("Hi I am your househelp. I will keep you comfortable. What is your name? \n")
 
 # [Statement, Min, Max, roundingOnDecimals]
-inputDefinition = []
+inputDefinition = list()
 inputDefinition.append(['The wind is blowing {} Bft', 0, 10, 0]) # Bft
 inputDefinition.append(['The temperature is {}C indoors', -10, 33, 1]) # Degrees celcius indoors
 inputDefinition.append(['It is {} percent sunny', 0, 100, 0]), # percentage of sun
@@ -17,7 +17,7 @@ inputDefinition.append(['It is raining {} mm per second', 0, 3, 2]) # Intensity 
 #inputDefinition.append(['The barometric pressure is {} bar', 0.980, 1.050, 0]) # Air pressure is not uniform across the Earth however. The normal range of the Earth's air pressure is from 980 millibars (mb) to 1050 mb. These differences are the result of low and high air pressure systems which are caused by unequal heating across the Earth's surface and the pressure gradient force.
 
 # [Answer, threshold]
-outputDefinition = []
+outputDefinition = list()
 outputDefinition.append(['I will turn on the heater', 0.5]); # If output is over 0.5 the heater will turn on
 outputDefinition.append(['I will open the door to the garden', 0.5]); # If output is over 0.5 the doors will open
 
@@ -43,7 +43,7 @@ def learn(brain):
 
     iteration += 1;
 
-    inputs = []
+    inputs = list()
     for(inputRowNr, inputRow) in enumerate(inputDefinition):
         currentValue = round(random.uniform(inputRow[1], inputRow[2]), inputRow[3]);
         inputs.append(currentValue)
