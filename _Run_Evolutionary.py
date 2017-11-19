@@ -34,7 +34,7 @@ trainPopulation(originalPopulation)
 originalPopulation.compute([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3]) # I expected someting like: [0, 0.3]
 
 nextGeneration = originalPopulation;
-for(generationNr) in range(1, 10) :
+for(generationNr) in range(1, 100) :
     nextGeneration = nextGeneration.breed()
 
     #Train them

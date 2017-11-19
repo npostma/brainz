@@ -1,9 +1,8 @@
 import math
 import random
 
-import Brain
-import Cell
-import MRI
+from AI import Cell, Brain
+from MRI import CLI
 
 
 class Population:
@@ -14,11 +13,9 @@ class Population:
 
     outputSize = 0
 
-
-
     brains = list()
 
-    def __init__(self, inputSize=6, outputSize=2, populationSize = 2):
+    def __init__(self, inputSize=6, outputSize=2, populationSize=2):
         self.brains = list()
 
         self.inputSize = inputSize
@@ -55,7 +52,7 @@ class Population:
 
     def showOutput(self):
         for (brainNr, brain) in enumerate(self.brains):
-            visual = MRI.MRI(brain)
+            visual = CLI.CLI(brain)
             visual.showOutput()
 
     # Every couple will create 2 children with there neighbour brain on a given moment.
@@ -106,7 +103,7 @@ class Population:
         numberOfCellsToMutate = int(random.random() * 5)
         mutationRate = random.uniform(-0.05, 0.05)
 
-        for(i) in range(0, numberOfCellsToMutate):
+        for (i) in range(0, numberOfCellsToMutate):
             cellnumber = int(random.uniform(0, genomeLength))
             daughter[cellnumber].weight *= mutationRate
             son[cellnumber].weight *= mutationRate
