@@ -47,6 +47,22 @@ To add the path of your pip installation to your PATH variable, you can use the 
 - Install the wheel
 > pip install PyQt4-4.11.4-cp27-cp27m-win_amd64.whl
 
+### Using the socket server.
+There is a basic socket server available when starting the GUI mode. This is for handing incoming messages to train the network. Or to compute.
+
+Send a message like this to assigned port (default 1337) {"command": "learn", "input": [1,1], "expectedOutput": [0]}\0
+
+There is nothing in the socket module to determine the end of the message as they just implement a low level pipe. So zero terminate your string
+
+#### Available commands:
+- learn
+  - {"command": "learn", "input": [1,1], "expectedOutput": [0]}\0
+- compute
+  - {"command": "compute", "input": [0,1], "expectedOutput": [1]}\0
+
+
+
+
 
 
 

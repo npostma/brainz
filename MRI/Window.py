@@ -2,6 +2,8 @@ import sys
 import time
 import sip
 
+
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from API import SocketServer
@@ -55,13 +57,18 @@ class Window(QMainWindow):
 
     def startListening(self):
         self.SocketServer = SocketServer.SocketServer()
-        self.connect(self.SocketServer, SIGNAL("received"), self.processData)
+        self.connect(self.SocketServer, SIGNAL("learn"), self.learnFromExternalData)
+        self.connect(self.SocketServer, SIGNAL("compute"), self.computeExternalData)
         self.SocketServer.start()
-        #self.connect(self.SocketServer, SIGNAL("finished()"), self.updateUi)
-        #self.connect(self.SocketServer, SIGNAL("terminated()"), self.updateUi)
 
-    def processData(self, data):
-        self.windowStatusBar.showMessage("Data received:" + data);
+    def learnFromExternalData(self, input, expectedOutput):
+        self.activePopulation.learn(input, expectedOutput);
+        self.update()
+
+    def computeExternalData(self, input, expectedOutput):
+        self.activePopulation.compute(input);
+        self.update()
+
 
     def addPanel(self, panel, populationNr):
 

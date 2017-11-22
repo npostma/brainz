@@ -1,11 +1,11 @@
 import socket
 from PyQt4.QtCore import *
+
 import json
 
 HOST = '0.0.0.0'
-PORT = 666
+PORT = 1337
 SIZEOF_UINT32 = 4
-
 
 # Socket server as a worker thread
 class SocketServer(QThread):
@@ -16,13 +16,24 @@ class SocketServer(QThread):
     def receiveInput(self):
         self.connection, self.address = self.socket.accept()
 
+        recvBuffer = ""
         while 1:
             # For now accepting max message size of 2048 (Individual message!)
-            data = self.connection.recv(2048).decode()
-            if not data:
+            dataString = self.connection.recv(2048).decode()
+
+            if not dataString:
                 break
 
-            self.emit(SIGNAL("received"), data)
+            recvBuffer = recvBuffer + dataString
+            strings = recvBuffer.split('\0')
+            for message in strings[:-1]:
+                try:
+                    data = json.loads(message)
+                    self.emit(SIGNAL(data['command']), data['input'], data['expectedOutput'])
+                except ValueError as err:
+                    print("Data received (" + message + ") was in incorrect format.")
+
+            recvBuffer = strings[-1]
 
         self.connection.close()
 
