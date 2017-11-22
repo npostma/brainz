@@ -1,4 +1,5 @@
 import math
+import threading
 
 import Layer
 import Neuron
@@ -28,9 +29,13 @@ class Brain:
     # Keep track of the fitness score. Used for sorting the population
     fitness = 99
 
+    learnThreads = []
+
     def __init__(self, inputSize=6, outputSize=2):
         self.inputSize = inputSize
         self.outputSize = outputSize
+
+        self.learnThreads = []
 
         # Rule of thumb to determine wich size the neural network sould have
         # https://chatbotslife.com/machine-learning-for-dummies-part-2-270165fc1700
@@ -117,9 +122,16 @@ class Brain:
 
     def learn(self, inputData, outputData):
 
-        f = lambda a, b: a + b
-
         self.compute(inputData)
+        # return self.__learn(inputData, outputData)
+
+        t = threading.Thread(target=self.__learn, args=(inputData, outputData))
+        self.learnThreads.append(t)
+        t.start()
+
+
+    def __learn(self, inputData, outputData):
+        f = lambda a, b: a + b
 
         # Calculate the gradient (NL: helling) for the output layer
         for (neuronNr, neuron) in enumerate(self.layers[-1].neurons):

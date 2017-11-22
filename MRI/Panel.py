@@ -23,6 +23,10 @@ class Panel(QWidget):
 
     canvas = None
 
+    drawingMaxWidth = 0
+
+    drawingMaxHeight = 0
+
     def __init__(self, brain):
         super(Panel, self).__init__()
 
@@ -59,7 +63,10 @@ class Panel(QWidget):
 
         formGrid.addWidget(submit, 1, lastIndex)
 
-        formGrid.addWidget(self.canvas, 0, 0, 1, lastIndex)
+        formGrid.addWidget(self.canvas, 0, 0, 1, lastIndex + 1)
+
+        self.resize(self.drawingMaxWidth + 100, self.drawingMaxHeight + 100)
+        self.parentWidget().resize(self.drawingMaxWidth + 100, self.drawingMaxHeight + 100)
 
         self.setLayout(formGrid)
 
@@ -143,19 +150,32 @@ class Panel(QWidget):
         # Hidden layers are the biggest layers. Use these to calculate a offset for the input en output layer. So that it will align nicely
         maxNeuronsInLayer = self.brain.hiddenSize
 
+        self.drawingMaxWidth = 0
+        self.drawingMaxHeight = 0
+
         for (layerNr, layer) in enumerate(self.brain.layers):
 
             deltaNeuronsInLayer = maxNeuronsInLayer - len(layer.neurons)
             yOffset = (layerHeightSteps * deltaNeuronsInLayer) / 2
 
-            layerPosition = layerNr + 1
+            layerPosition = layerNr
+
+            xR = layerXOffset + (layerPosition * (layerWidth + layerMargin))
+            yR = 10 + yOffset
+            layerHeight = (len(layer.neurons) * layerHeightSteps) + neuronMargin
 
             rect = Rectangle.Rectangle(
-                layerXOffset + (layerPosition * (layerWidth + layerMargin)),
-                10 + yOffset,
+                xR,
+                yR,
                 layerWidth,
-                (len(layer.neurons) * layerHeightSteps) + neuronMargin
+                layerHeight
             )
+
+            if (self.drawingMaxWidth < (xR + layerWidth)):
+                self.drawingMaxWidth = (xR + layerWidth)
+
+            if (self.drawingMaxHeight < (yR + layerHeight)):
+                self.drawingMaxHeight = (yR + layerHeight)
 
             if (layerNr >= len(self.points)):
                 self.points.insert(layerNr, list())
@@ -163,15 +183,15 @@ class Panel(QWidget):
             self.rectangles.append(rect)
 
             for (neuronNr, neuron) in enumerate(layer.neurons):
-                x = (layerPosition * (layerWidth + layerMargin)) + neuronXOffset
-                y = 15 + (neuronNr * layerHeightSteps) + yOffset
+                xN = (layerPosition * (layerWidth + layerMargin)) + neuronXOffset
+                yN = 15 + (neuronNr * layerHeightSteps) + yOffset
 
-                centerPoint = Point.Point(x + (neuronWidth / 2), y + (neuronHeight / 2))
+                centerPoint = Point.Point(xN + (neuronWidth / 2), yN + (neuronHeight / 2))
                 self.points[layerNr].insert(neuronNr, centerPoint)
 
                 rect = Rectangle.Rectangle(
-                    x,
-                    y,
+                    xN,
+                    yN,
                     neuronWidth,
                     neuronHeight
                 )

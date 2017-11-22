@@ -1,13 +1,13 @@
 import sys
-from MRI import PanelDock
+from MRI import Panel
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 
-# Dockable wrapper for panel
+# Main window
 class Window(QMainWindow):
-    # Instance of the internal panel
-    dockablePanels = list()
+    # Instance of the internal panels
+    panels = list()
 
     initialized = False
 
@@ -15,17 +15,28 @@ class Window(QMainWindow):
 
     mainApplication = None
 
+    mdi = None
+
     def __init__(self, mainApplication):
         super(Window, self).__init__()
-        self.dockablePanels = list()
+        self.panels = list()
         self.initialized = False
         self.activePopulation = None
         self.mainApplication = mainApplication
 
-    def addDockablePanel(self, dockablePanel):
-        self.dockablePanels.append(dockablePanel)
-        self.addDockWidget(Qt.LeftDockWidgetArea, dockablePanel)
-        dockablePanel.setupLayout()
+        self.mdi = QMdiArea()
+        self.setCentralWidget(self.mdi)
+
+
+
+    def addPanel(self, subWindow):
+        self.panels.append(subWindow)
+
+        self.mdi.addSubWindow(subWindow)
+        subWindow.show()
+        subWindow.setupLayout()
+
+
 
     def setupLayout(self):
         if (self.initialized == True):
@@ -48,6 +59,16 @@ class Window(QMainWindow):
         # Todo: make some cool interface for this.
         teachPopulation.triggered.connect(self.teachPopulation)
 
+        cascadePanels = QAction("&Cascade", self)
+        cascadePanels.setShortcut("Ctrl+1")
+        cascadePanels.setStatusTip('Cascade all panels')
+        cascadePanels.triggered.connect(self.cascadePanels)
+
+        tilePanels = QAction("&Tile", self)
+        tilePanels.setShortcut("Ctrl+2")
+        tilePanels.setStatusTip('Tile all panels')
+        tilePanels.triggered.connect(self.tilePanels)
+
         self.statusBar()
 
         mainMenu = self.menuBar()
@@ -58,6 +79,10 @@ class Window(QMainWindow):
         fileMenu.addAction(breedPopulation)
         fileMenu.addAction(teachPopulation)
 
+        fileMenu = mainMenu.addMenu('&Windows')
+        fileMenu.addAction(cascadePanels)
+        fileMenu.addAction(tilePanels)
+
         self.setWindowState(Qt.WindowFullScreen)
 
         self.setWindowTitle("Taking over the world is the new hello world *EvIl LaUgHteR")
@@ -67,12 +92,18 @@ class Window(QMainWindow):
 
         self.initialized = True
 
+    def cascadePanels(self):
+        self.mdi.cascadeSubWindows()
+
+    def tilePanels(self):
+        self.mdi.tileSubWindows()
+
     def teachPopulation(self):
 
         for (index) in range(0, 500):
-            self.activePopulation.learn([0, 0], [0])
-            self.activePopulation.learn([1, 0], [1])
-            self.activePopulation.learn([0, 1], [1])
+            self.activePopulation.learn([-1, -1], [0])
+            self.activePopulation.learn([1, -1], [1])
+            self.activePopulation.learn([-1, 1], [1])
             self.activePopulation.learn([1, 1], [0])
 
             self.update()
@@ -90,10 +121,10 @@ class Window(QMainWindow):
     def setPopulation(self, population):
         self.activePopulation = population
         for (i, brain) in enumerate(population.brains):
-            panelDock = PanelDock.PanelDock(brain)
-            self.addDockablePanel(panelDock);
+            panel = Panel.Panel(brain)
+            self.addPanel(panel);
             self.update();
 
     def update(self):
-        for (i, dockablePanel) in enumerate(self.dockablePanels):
-            dockablePanel.update()
+        for (i, panel) in enumerate(self.panels):
+            panel.update()
