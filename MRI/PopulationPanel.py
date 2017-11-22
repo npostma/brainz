@@ -59,7 +59,7 @@ class PopulationPanel(QWidget):
 
     def computeClicked(self):
         if (self.mainWindow.activePopulation == None):
-            # todo: message in to statusbar
+            self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
             return;
 
         data = list()

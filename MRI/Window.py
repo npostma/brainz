@@ -16,6 +16,8 @@ class Window(QMainWindow):
     # Instances of the internal panels
     panels = list()
 
+    windowStatusBar = None
+
     initialized = False
 
     activePopulation = None
@@ -48,6 +50,8 @@ class Window(QMainWindow):
         self.mdi = QMdiArea()
         self.setCentralWidget(self.mdi)
 
+        self.windowStatusBar = None
+
     def addPanel(self, panel, populationNr):
 
         if (populationNr >= len(self.panels)):
@@ -71,6 +75,9 @@ class Window(QMainWindow):
         self.leftDock.setFloating(False)
 
         self.addDockWidget(Qt.LeftDockWidgetArea, self.leftDock)
+
+        self.windowStatusBar = QStatusBar()
+        self.setStatusBar(self.windowStatusBar)
 
         closeApplication = QAction("&Close", self)
         closeApplication.setShortcut("Ctrl+Q")
@@ -157,7 +164,7 @@ class Window(QMainWindow):
 
     def teachPopulation(self):
         if (self.activePopulation == None):
-            # todo: message in to statusbar
+            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
             return;
 
         for (index) in range(0, 500):
@@ -171,11 +178,11 @@ class Window(QMainWindow):
             self.activePopulation.learn([1, 1], [0])
             self.timedUpdate()
             # Prevent main application from freezing!
-            #self.mainApplication.processEvents()
+            self.mainApplication.processEvents()
 
     def breedPopulation(self):
         if(self.activePopulation == None):
-            #todo: message in to statusbar
+            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
             return;
 
         newPopulation = self.activePopulation.breed()
@@ -184,7 +191,7 @@ class Window(QMainWindow):
     def destroyPopulation(self, index):
 
         if(len(self.panels) <= index or index < 0):
-            # todo: message in to statusbar
+            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
             return
 
         # Remove panels from te list
