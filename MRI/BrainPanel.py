@@ -6,7 +6,7 @@ from Drawable import Rectangle, Point, Line, Label
 from MRI import Canvas
 
 
-class Panel(QWidget):
+class BrainPanel(QWidget):
     # Instance of the brain to scan
     brain = None
 
@@ -28,7 +28,7 @@ class Panel(QWidget):
     drawingMaxHeight = 0
 
     def __init__(self, brain):
-        super(Panel, self).__init__()
+        super(BrainPanel, self).__init__()
 
         self.brain = brain
         self.canvas = Canvas.Canvas()
@@ -42,7 +42,11 @@ class Panel(QWidget):
         self.lines = list()
         self.strings = list()
 
+        self.drawingMaxWidth = 0
+        self.drawingMaxHeight = 0
+
         self.createStaticDrawables()
+
 
     def setupLayout(self):
         formGrid = QGridLayout()
@@ -81,8 +85,7 @@ class Panel(QWidget):
     def update(self):
         self.updateDynamicDrawables()
 
-
-        self.setWindowTitle("Fitness: " + str(self.brain.fitness))
+        self.setWindowTitle("Fitness: " + str(self.brain.fitness) + " Learncycle:" + str(self.brain.learnCycle))
 
         self.canvas.reset()
         self.canvas.addRectanges(self.rectangles)

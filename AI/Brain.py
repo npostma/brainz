@@ -29,9 +29,14 @@ class Brain:
     # Keep track of the fitness score. Used for sorting the population
     fitness = 99
 
+    # Keep track of how many times something is learned
+    learnCycle = 0
+
     learnThreads = []
 
     def __init__(self, inputSize=6, outputSize=2):
+        self.learnCycle = 0
+
         self.inputSize = inputSize
         self.outputSize = outputSize
 
@@ -121,6 +126,7 @@ class Brain:
                 neuron.value = self.sigmoid(value)
 
     def learn(self, inputData, outputData):
+        self.learnCycle += 1
 
         self.compute(inputData)
         # return self.__learn(inputData, outputData)

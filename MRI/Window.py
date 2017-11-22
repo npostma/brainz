@@ -1,12 +1,18 @@
-import sys, time
-from MRI import Panel
+import sys
+import time
+
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+
+from MRI import BrainPanel, PopulationPanel
 
 
 # Main window
 class Window(QMainWindow):
-    # Instance of the internal panels
+    # Populations
+    populations = list()
+
+    # Instances of the internal panels
     panels = list()
 
     initialized = False
@@ -17,11 +23,14 @@ class Window(QMainWindow):
 
     mdi = None
 
+    leftDock = None
+
+    populationPanel = None
+
     # Timed loop variables
     startTime = 0
     endTime = 0
     deltaTime = 0
-
 
     def __init__(self, mainApplication):
         super(Window, self).__init__()
@@ -35,9 +44,11 @@ class Window(QMainWindow):
         self.endTime = 0
         self.deltaTime = 0
 
+        self.mdi = QMdiArea()
+        self.setCentralWidget(self.mdi)
+
     def addPanel(self, subWindow):
         self.panels.append(subWindow)
-
         self.mdi.addSubWindow(subWindow)
         subWindow.show()
         subWindow.setupLayout()
@@ -46,8 +57,13 @@ class Window(QMainWindow):
         if (self.initialized == True):
             raise StandardError("Already started")
 
-        self.mdi = QMdiArea()
-        self.setCentralWidget(self.mdi)
+        self.leftDock = QDockWidget("Population control", self)
+        self.populationPanel = PopulationPanel.PopulationPanel(self, self.activePopulation.inputSize)
+        self.populationPanel.setupLayout()
+        self.leftDock.setWidget(self.populationPanel)
+        self.leftDock.setFloating(False)
+
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.leftDock)
 
         closeApplication = QAction("&Close", self)
         closeApplication.setShortcut("Ctrl+Q")
@@ -92,12 +108,15 @@ class Window(QMainWindow):
 
         self.setWindowState(Qt.WindowFullScreen)
 
+        self.populationPanel.updatePopulationList()
+        
         self.setWindowTitle("Taking over the world is the new hello world *EvIl LaUgHteR")
 
         self.move(0, 0)
         self.show()
 
         self.initialized = True
+
 
     def cascadePanels(self):
         self.mdi.cascadeSubWindows()
@@ -108,29 +127,33 @@ class Window(QMainWindow):
     def timedUpdate(self):
 
         if self.startTime == 0:
-            self.startTime = time.time();
+            self.startTime = time.time()
 
-        self.endTime = time.time();
+        self.endTime = time.time()
 
-        self.deltaTime = self.endTime - self.startTime;
+        self.deltaTime = self.endTime - self.startTime
 
         if self.deltaTime < 0.1:
             return
 
         # restart the mesuring of time
-        self.startTime = time.time();
+        self.startTime = time.time()
 
         # Do an update of the windows every 100ms.
         # 1 - Faster is not readable and so, it has no function
         # 2 - More updates slow down the learning process significantly
         start_time = time.time()
         end_time = time.time()
+
+        # cProfile.runctx('self.update()',globals(),locals())
         self.update()
 
     def teachPopulation(self):
 
         for (index) in range(0, 1500):
+            # cProfile.runctx('self.activePopulation.learn([0, 0], [0])',globals(),locals())
             self.activePopulation.learn([0, 0], [0])
+
             self.timedUpdate()
             self.activePopulation.learn([1, 0], [1])
             self.timedUpdate()
@@ -141,20 +164,24 @@ class Window(QMainWindow):
             # Prevent main application from freezing!
             self.mainApplication.processEvents()
 
-
     def breedPopulation(self):
         newPopulation = self.activePopulation.breed()
-        self.setPopulation(newPopulation)
+        self.addPopulation(newPopulation)
 
     def closeApplication(self):
         sys.exit()
 
-    def setPopulation(self, population):
+    def addPopulation(self, population):
+        self.populations.append(population)
+
         self.activePopulation = population
         for (i, brain) in enumerate(population.brains):
-            panel = Panel.Panel(brain)
-            self.addPanel(panel);
-            self.update();
+            panel = BrainPanel.BrainPanel(brain)
+            self.addPanel(panel)
+            self.update()
+
+        if(self.populationPanel != None):
+            self.populationPanel.updatePopulationList()
 
     def update(self):
         for (i, panel) in enumerate(self.panels):

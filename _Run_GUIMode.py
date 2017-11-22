@@ -10,10 +10,9 @@ mainWindow = Window.Window(app)
 
 population = Population.Population(2, 1, 5)
 
+mainWindow.addPopulation(population)
+
 mainWindow.setupLayout()
-
-mainWindow.setPopulation(population)
-
 
 mainWindow.teachPopulation()
 

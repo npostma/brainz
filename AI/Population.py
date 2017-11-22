@@ -40,11 +40,10 @@ class Population:
             brain.learn(inputData, outputData)
             brain.measureFitness(outputData)
 
-    def compute(self, inputData, expectedOutputData):
+    def compute(self, inputData):
         # Let the whole population compute the same data
         for (brainNr, brain) in enumerate(self.brains):
             brain.compute(inputData)
-            brain.measureFitness(expectedOutputData)
 
     def showmeasureFitness(self):
         for (brainNr, brain) in enumerate(self.brains):
