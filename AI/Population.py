@@ -38,6 +38,7 @@ class Population:
         # Let the whole population learn the same data
         for (brainNr, brain) in enumerate(self.brains):
             brain.learn(inputData, outputData)
+            brain.measureFitness(outputData)
 
     def compute(self, inputData, expectedOutputData):
         # Let the whole population compute the same data

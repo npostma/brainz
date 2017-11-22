@@ -81,6 +81,9 @@ class Panel(QWidget):
     def update(self):
         self.updateDynamicDrawables()
 
+
+        self.setWindowTitle("Fitness: " + str(self.brain.fitness))
+
         self.canvas.reset()
         self.canvas.addRectanges(self.rectangles)
         self.canvas.addLines(self.getLines())

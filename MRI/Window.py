@@ -1,4 +1,4 @@
-import sys
+import sys, time
 from MRI import Panel
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -17,6 +17,12 @@ class Window(QMainWindow):
 
     mdi = None
 
+    # Timed loop variables
+    startTime = 0
+    endTime = 0
+    deltaTime = 0
+
+
     def __init__(self, mainApplication):
         super(Window, self).__init__()
         self.panels = list()
@@ -24,10 +30,10 @@ class Window(QMainWindow):
         self.activePopulation = None
         self.mainApplication = mainApplication
 
-        self.mdi = QMdiArea()
-        self.setCentralWidget(self.mdi)
-
-
+        # Timed loop variables
+        self.startTime = 0
+        self.endTime = 0
+        self.deltaTime = 0
 
     def addPanel(self, subWindow):
         self.panels.append(subWindow)
@@ -36,11 +42,12 @@ class Window(QMainWindow):
         subWindow.show()
         subWindow.setupLayout()
 
-
-
     def setupLayout(self):
         if (self.initialized == True):
             raise StandardError("Already started")
+
+        self.mdi = QMdiArea()
+        self.setCentralWidget(self.mdi)
 
         closeApplication = QAction("&Close", self)
         closeApplication.setShortcut("Ctrl+Q")
@@ -98,18 +105,42 @@ class Window(QMainWindow):
     def tilePanels(self):
         self.mdi.tileSubWindows()
 
+    def timedUpdate(self):
+
+        if self.startTime == 0:
+            self.startTime = time.time();
+
+        self.endTime = time.time();
+
+        self.deltaTime = self.endTime - self.startTime;
+
+        if self.deltaTime < 0.1:
+            return
+
+        # restart the mesuring of time
+        self.startTime = time.time();
+
+        # Do an update of the windows every 100ms.
+        # 1 - Faster is not readable and so, it has no function
+        # 2 - More updates slow down the learning process significantly
+        start_time = time.time()
+        end_time = time.time()
+        self.update()
+
     def teachPopulation(self):
 
-        for (index) in range(0, 500):
-            self.activePopulation.learn([-1, -1], [0])
-            self.activePopulation.learn([1, -1], [1])
-            self.activePopulation.learn([-1, 1], [1])
+        for (index) in range(0, 1500):
+            self.activePopulation.learn([0, 0], [0])
+            self.timedUpdate()
+            self.activePopulation.learn([1, 0], [1])
+            self.timedUpdate()
+            self.activePopulation.learn([0, 1], [1])
+            self.timedUpdate()
             self.activePopulation.learn([1, 1], [0])
-
-            self.update()
-
+            self.timedUpdate()
             # Prevent main application from freezing!
             self.mainApplication.processEvents()
+
 
     def breedPopulation(self):
         newPopulation = self.activePopulation.breed()
