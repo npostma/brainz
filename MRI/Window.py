@@ -4,6 +4,7 @@ import sip
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
+from API import SocketServer
 
 from MRI import BrainPanel, PopulationPanel
 
@@ -51,6 +52,16 @@ class Window(QMainWindow):
         self.setCentralWidget(self.mdi)
 
         self.windowStatusBar = None
+
+    def startListening(self):
+        self.SocketServer = SocketServer.SocketServer()
+        self.connect(self.SocketServer, SIGNAL("received"), self.processData)
+        self.SocketServer.start()
+        #self.connect(self.SocketServer, SIGNAL("finished()"), self.updateUi)
+        #self.connect(self.SocketServer, SIGNAL("terminated()"), self.updateUi)
+
+    def processData(self, data):
+        self.windowStatusBar.showMessage("Data received:" + data);
 
     def addPanel(self, panel, populationNr):
 

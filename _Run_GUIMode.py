@@ -8,6 +8,8 @@ app = QtGui.QApplication(sys.argv)
 
 mainWindow = Window.Window(app)
 
+mainWindow.startListening()
+
 population = Population.Population(2, 1, 5)
 
 mainWindow.addPopulation(population)
