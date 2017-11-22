@@ -1,3 +1,4 @@
+from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 
 from Drawable import Rectangle, Point, Line, Label
@@ -47,6 +48,17 @@ class BrainPanel(QWidget):
 
         self.createStaticDrawables()
 
+    def close(self):
+        self.brain = None
+        self.points = None
+        self.rectangles = None
+        self.lines = None
+        self.strings = None
+        self.inputs = None
+        self.canvas = None
+        self.drawingMaxWidth = None
+        self.drawingMaxHeight = None
+        return super(BrainPanel, self).close()
 
     def setupLayout(self):
         formGrid = QGridLayout()

@@ -1,5 +1,6 @@
 import sys
 import time
+import sip
 
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
@@ -47,11 +48,17 @@ class Window(QMainWindow):
         self.mdi = QMdiArea()
         self.setCentralWidget(self.mdi)
 
-    def addPanel(self, subWindow):
-        self.panels.append(subWindow)
-        self.mdi.addSubWindow(subWindow)
-        subWindow.show()
-        subWindow.setupLayout()
+    def addPanel(self, panel, populationNr):
+
+        if (populationNr >= len(self.panels)):
+            self.panels.insert(populationNr, list())
+
+        subWindow = self.mdi.addSubWindow(panel)
+
+        self.panels[populationNr].append({'panel': panel, 'window': subWindow})
+
+        panel.show()
+        panel.setupLayout()
 
     def setupLayout(self):
         if (self.initialized == True):
@@ -109,7 +116,7 @@ class Window(QMainWindow):
         self.setWindowState(Qt.WindowFullScreen)
 
         self.populationPanel.updatePopulationList()
-        
+
         self.setWindowTitle("Taking over the world is the new hello world *EvIl LaUgHteR")
 
         self.move(0, 0)
@@ -149,11 +156,13 @@ class Window(QMainWindow):
         self.update()
 
     def teachPopulation(self):
+        if (self.activePopulation == None):
+            # todo: message in to statusbar
+            return;
 
-        for (index) in range(0, 1500):
+        for (index) in range(0, 500):
             # cProfile.runctx('self.activePopulation.learn([0, 0], [0])',globals(),locals())
             self.activePopulation.learn([0, 0], [0])
-
             self.timedUpdate()
             self.activePopulation.learn([1, 0], [1])
             self.timedUpdate()
@@ -162,11 +171,47 @@ class Window(QMainWindow):
             self.activePopulation.learn([1, 1], [0])
             self.timedUpdate()
             # Prevent main application from freezing!
-            self.mainApplication.processEvents()
+            #self.mainApplication.processEvents()
 
     def breedPopulation(self):
+        if(self.activePopulation == None):
+            #todo: message in to statusbar
+            return;
+
         newPopulation = self.activePopulation.breed()
         self.addPopulation(newPopulation)
+
+    def destroyPopulation(self, index):
+
+        if(len(self.panels) <= index or index < 0):
+            # todo: message in to statusbar
+            return
+
+        # Remove panels from te list
+        brainPanels = self.panels.pop(index)
+
+        # Clean up panels
+        for (i, panelData) in enumerate(brainPanels):
+            window = panelData['window']
+            panel = panelData['panel']
+            panel.close()
+            # Delete panel from the container
+            self.mdi.removeSubWindow(panel)
+            # Delete contents
+            panel.deleteLater()
+            panel.setParent(None)
+            sip.delete(panel)
+
+            window.close()
+
+        # remove population from the list
+        populationToDestoy = self.populations.pop(index)
+
+        if(self.activePopulation == populationToDestoy):
+            self.activePopulation = next(iter(self.populations or []), None)
+
+        # Update te population selection list
+        self.populationPanel.updatePopulationList()
 
     def closeApplication(self):
         sys.exit()
@@ -177,12 +222,13 @@ class Window(QMainWindow):
         self.activePopulation = population
         for (i, brain) in enumerate(population.brains):
             panel = BrainPanel.BrainPanel(brain)
-            self.addPanel(panel)
+            self.addPanel(panel, len(self.populations) - 1)
             self.update()
 
         if(self.populationPanel != None):
             self.populationPanel.updatePopulationList()
 
     def update(self):
-        for (i, panel) in enumerate(self.panels):
-            panel.update()
+        for (i, panelGroupList) in enumerate(self.panels):
+            for (i, panelData) in enumerate(panelGroupList):
+                panelData['panel'].update()
