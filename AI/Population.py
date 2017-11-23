@@ -84,6 +84,16 @@ class Population:
 
         return Population.fromBrains(childPopulation, self.inputSize, self.outputSize)
 
+    def clone(self):
+        clonedPopulation = list()
+
+        for (brainNr, brain) in enumerate(self.brains):
+            genome = self.createGenome(brain)
+            clonedBrain = Brain.Brain.fromGenome(genome, self.inputSize, self.outputSize)
+            clonedPopulation.append(clonedBrain)
+
+        return Population.fromBrains(clonedPopulation, self.inputSize, self.outputSize)
+
     def crossover(self, motherGenome, dadGenome):
         children = list()
 

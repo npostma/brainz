@@ -195,6 +195,14 @@ class Window(QMainWindow):
         newPopulation = self.activePopulation.breed()
         self.addPopulation(newPopulation)
 
+    def clonePopulation(self):
+        if self.activePopulation is None:
+            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
+            return
+
+        newPopulation = self.activePopulation.clone()
+        self.addPopulation(newPopulation)
+
     def destroyPopulation(self, index):
 
         if len(self.panels) <= index or index < 0:

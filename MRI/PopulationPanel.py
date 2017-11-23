@@ -45,17 +45,15 @@ class PopulationPanel(QWidget):
             computeFormGrid.addRow(QLabel("Input " + str(i) + ":"), decimalInput)
             decimalInput = QLineEdit()
             self.learnInputs.append(decimalInput)
-            decimalInput.setValidator(QDoubleValidator(0.99, 9.99, 2))
             learnFormGrid.addRow(QLabel("Input " + str(i) + ":"), decimalInput)
 
         for (i) in range(0, self.numOutputs):
             decimalInput = QLineEdit()
             self.learnOutputs.append(decimalInput)
-            decimalInput.setValidator(QDoubleValidator(0.99, 9.99, 2))
             learnFormGrid.addRow(QLabel("Output " + str(i) + ":"), decimalInput)
 
         self.iterationsTextbox = QLineEdit()
-        self.iterationsTextbox.setValidator(QDoubleValidator(0.99, 9.99, 2))
+        self.iterationsTextbox.setValidator(QIntValidator(0, 9999))
         self.iterationsTextbox.setText("500")
         learnFormGrid.addRow(QLabel("Num. of iterations:"), self.iterationsTextbox)
 
@@ -70,6 +68,10 @@ class PopulationPanel(QWidget):
         teach = QPushButton()
         teach.clicked.connect(self.learnClicked)
         teach.setText("Learn")
+
+        Clone = QPushButton()
+        Clone.clicked.connect(self.cloneClicked)
+        Clone.setText("Clone")
 
         destroy = QPushButton()
         destroy.clicked.connect(self.destroyClicked)
@@ -95,6 +97,7 @@ class PopulationPanel(QWidget):
 
         verticalStack.addWidget(line)
         verticalStack.addWidget(breed)
+        verticalStack.addWidget(Clone)
         verticalStack.addWidget(Show)
         verticalStack.addWidget(Hide)
         verticalStack.addWidget(destroy)
@@ -148,6 +151,9 @@ class PopulationPanel(QWidget):
     def breedClicked(self):
         self.mainWindow.breedPopulation()
 
+    def cloneClicked(self):
+        self.mainWindow.clonePopulation()
+
     def learnClicked(self):
         if self.mainWindow.activePopulation is None:
             self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
@@ -155,14 +161,32 @@ class PopulationPanel(QWidget):
 
         inputData = list()
         for (i, inputField) in enumerate(self.learnInputs):
-            inputData.append(float(inputField.text()))
+            trainingSet = inputField.text()
+            trainingSet = trainingSet.split(';')
+
+            for (j, value) in enumerate(trainingSet[:-1]):
+
+                if (j >= len(inputData)):
+                    inputData.insert(j, list())
+
+                inputData[j].append(float(value))
 
         expectedOutput = list()
         for (i, outputField) in enumerate(self.learnOutputs):
-            expectedOutput.append(float(outputField.text()))
+            outputSet = outputField.text()
+            outputSet = outputSet.split(';')
+
+            for (j, value) in enumerate(outputSet[:-1]):
+
+                if (j >= len(expectedOutput)):
+                    expectedOutput.insert(j, list())
+
+                expectedOutput[j].append(float(value))
 
         numberOfIterations = int(self.iterationsTextbox.text())
-        self.mainWindow.teachPopulation(inputData, expectedOutput, numberOfIterations)
+
+        for(setNr, trainingSet) in enumerate(inputData):
+            self.mainWindow.teachPopulation(trainingSet, expectedOutput[setNr], numberOfIterations)
 
     def destroyClicked(self):
         self.mainWindow.destroyPopulation(self.populationSelection.currentIndex())
