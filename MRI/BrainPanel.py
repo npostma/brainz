@@ -139,7 +139,8 @@ class BrainPanel(QWidget):
                 self.strings.insert(layerNr, list())
 
             for (neuronNr, neuron) in enumerate(layer.neurons):
-                centerPoint = self.points[layerNr][neuronNr]
+                centerPoint = self.points[layerNr][neuronNr] - Point.Point(20, 12)
+
                 # String objects are not removed. Only updated if available
                 # TODO: If this is faster then removing / creating then rewrite for Rect/Lines
                 # TODO: Implement metrics to prove performance improvements
