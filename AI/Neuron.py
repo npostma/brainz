@@ -30,7 +30,7 @@ class Neuron:
 
     activations = {}
 
-    activeActivation = ACTIVATION_SIGMOID
+    activeActivation = None
 
     def __init__(self, numWeights, name):
 
@@ -51,16 +51,24 @@ class Neuron:
             self.ACTIVATION_RELU: self.__relu,
         }
 
+        self.activeActivation = self.activations[self.ACTIVATION_SIGMOID]
+
     def doPrint(self):
         print 'Neuron value: \t' + str(self.value)
         print 'Weights:'
         for weight in self.weights:
             print ('\t\t\t' + str(weight))
 
+    def setAcitvationFunction(self, activationFunction):
+        try:
+            self.activeActivation = self.activations[activationFunction]
+        except IndexError:
+            return
+
     # Activation function outputs a value between 0 and 1
     def activate(self, incomingValue):
         self.incomingValue = incomingValue
-        self.value = self.activations[self.activeActivation](self.incomingValue)
+        self.value = self.activeActivation(self.incomingValue)
 
     # return 1 / (1 + math.exp(-value))
     def __sigmoid(self, value):

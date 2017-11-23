@@ -29,28 +29,25 @@ class Line(QLine):
         return color
 
     def setWeight(self, weight):
-        if (weight < 0):
-            a = abs(weight) * 100
-            r = abs(weight) * 100
-            if (a > 255):
-                a = 255
-                r = 255
+        a = abs(weight) * 30
+        c = abs(weight) * 50
 
-            self.width = 2
+        if (a >= 200):
+            a = 200
+
+        if (c >= 255):
+            c = 255
+
+        if(weight < 0):
             self.g = 0
-            self.r = r
-            self.a = a
+            self.r = c
         else:
+            self.r = 0
+            self.g = c
 
-            r = 0
-            g = weight * 100
-            if (g > 255):
-                g = 255
+        self.a = 255 - a
+        self.width = (abs(weight) * 2) + 1
 
-            self.width = (1 + weight) * 2
-            self.g = g
-            self.r = 9
-            self.a = 255
 
     def getPen(self):
         pen = QPen(self.getColor())

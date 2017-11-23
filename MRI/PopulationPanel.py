@@ -1,4 +1,5 @@
 from PyQt4.QtGui import *
+from AI import Neuron
 
 
 class PopulationPanel(QWidget):
@@ -57,6 +58,8 @@ class PopulationPanel(QWidget):
         self.iterationsTextbox.setText("500")
         learnFormGrid.addRow(QLabel("Num. of iterations:"), self.iterationsTextbox)
 
+
+
         submit = QPushButton()
         submit.clicked.connect(self.computeClicked)
         submit.setText("Compute")
@@ -102,9 +105,19 @@ class PopulationPanel(QWidget):
         verticalStack.addWidget(Hide)
         verticalStack.addWidget(destroy)
 
+        activationFunctionSelect = QComboBox()
+        activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_SIGMOID)
+        activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_RELU)
+        activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_TANH)
+        activationFunctionSelect.activated[str].connect(self.activateActivationFunction)
+        verticalStack.addWidget(activationFunctionSelect)
+
         verticalStack.addStretch()
 
         self.setLayout(verticalStack)
+
+    def activateActivationFunction(self, option):
+        self.mainWindow.activePopulation.setAcitvationFunction(str(option))
 
     def computeClicked(self):
         if self.mainWindow.activePopulation is None:
