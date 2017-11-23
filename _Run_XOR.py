@@ -10,7 +10,7 @@ brain = Brain.Brain(2, 1)
 
 # Class for printing our brain whenever we want (debugging, use visual.show() for printing the brain in its current state)
 visual = CLI.CLI(brain)
-visual.show();
+visual.show()
 
 try:
     for (index) in range(0, 2500):

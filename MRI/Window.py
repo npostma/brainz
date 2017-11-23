@@ -2,8 +2,6 @@ import sys
 import time
 import sip
 
-
-
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from API import SocketServer
@@ -62,17 +60,16 @@ class Window(QMainWindow):
         self.SocketServer.start()
 
     def learnFromExternalData(self, input, expectedOutput):
-        self.activePopulation.learn(input, expectedOutput);
-        self.update()
+        self.activePopulation.learn(input, expectedOutput)
+        self.timedUpdate()
 
     def computeExternalData(self, input, expectedOutput):
-        self.activePopulation.compute(input);
-        self.update()
-
+        self.activePopulation.compute(input)
+        self.timedUpdate()
 
     def addPanel(self, panel, populationNr):
 
-        if (populationNr >= len(self.panels)):
+        if populationNr >= len(self.panels):
             self.panels.insert(populationNr, list())
 
         subWindow = self.mdi.addSubWindow(panel)
@@ -83,11 +80,12 @@ class Window(QMainWindow):
         panel.setupLayout()
 
     def setupLayout(self):
-        if (self.initialized == True):
+        if self.initialized == True:
             raise StandardError("Already started")
 
         self.leftDock = QDockWidget("Population control", self)
-        self.populationPanel = PopulationPanel.PopulationPanel(self, self.activePopulation.inputSize)
+        self.populationPanel = PopulationPanel.PopulationPanel(self, self.activePopulation.inputSize,
+                                                               self.activePopulation.outputSize)
         self.populationPanel.setupLayout()
         self.leftDock.setWidget(self.populationPanel)
         self.leftDock.setFloating(False)
@@ -149,13 +147,15 @@ class Window(QMainWindow):
 
         self.initialized = True
 
-
     def cascadePanels(self):
         self.mdi.cascadeSubWindows()
 
     def tilePanels(self):
         self.mdi.tileSubWindows()
 
+    # Do an update of the windows every 100ms.
+    # 1 - Faster is not readable and so, it has no function
+    # 2 - More updates slow down the learning process significantly
     def timedUpdate(self):
 
         if self.startTime == 0:
@@ -165,50 +165,39 @@ class Window(QMainWindow):
 
         self.deltaTime = self.endTime - self.startTime
 
+        # Passed time less then 0.1s?
         if self.deltaTime < 0.1:
             return
 
         # restart the mesuring of time
         self.startTime = time.time()
 
-        # Do an update of the windows every 100ms.
-        # 1 - Faster is not readable and so, it has no function
-        # 2 - More updates slow down the learning process significantly
-        start_time = time.time()
-        end_time = time.time()
-
         # cProfile.runctx('self.update()',globals(),locals())
         self.update()
 
-    def teachPopulation(self):
-        if (self.activePopulation == None):
+    def teachPopulation(self, inputData, expectedOutputData, numberOfIterations):
+        if self.activePopulation is None:
             self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
-            return;
+            return
 
-        for (index) in range(0, 500):
+        for (index) in range(0, numberOfIterations):
             # cProfile.runctx('self.activePopulation.learn([0, 0], [0])',globals(),locals())
-            self.activePopulation.learn([0, 0], [0])
-            self.timedUpdate()
-            self.activePopulation.learn([1, 0], [1])
-            self.timedUpdate()
-            self.activePopulation.learn([0, 1], [1])
-            self.timedUpdate()
-            self.activePopulation.learn([1, 1], [0])
+            self.activePopulation.learn(inputData, expectedOutputData)
             self.timedUpdate()
             # Prevent main application from freezing!
             self.mainApplication.processEvents()
 
     def breedPopulation(self):
-        if(self.activePopulation == None):
+        if self.activePopulation is None:
             self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
-            return;
+            return
 
         newPopulation = self.activePopulation.breed()
         self.addPopulation(newPopulation)
 
     def destroyPopulation(self, index):
 
-        if(len(self.panels) <= index or index < 0):
+        if len(self.panels) <= index or index < 0:
             self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
             return
 
@@ -232,7 +221,7 @@ class Window(QMainWindow):
         # remove population from the list
         populationToDestoy = self.populations.pop(index)
 
-        if(self.activePopulation == populationToDestoy):
+        if self.activePopulation == populationToDestoy:
             self.activePopulation = next(iter(self.populations or []), None)
 
         # Update te population selection list
@@ -250,7 +239,7 @@ class Window(QMainWindow):
             self.addPanel(panel, len(self.populations) - 1)
             self.update()
 
-        if(self.populationPanel != None):
+        if self.populationPanel is not None:
             self.populationPanel.updatePopulationList()
 
     def update(self):

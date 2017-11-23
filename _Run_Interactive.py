@@ -18,36 +18,36 @@ inputDefinition.append(['It is raining {} mm per second', 0, 3, 2]) # Intensity 
 
 # [Answer, threshold]
 outputDefinition = list()
-outputDefinition.append(['I will turn on the heater', 0.5]); # If output is over 0.5 the heater will turn on
-outputDefinition.append(['I will open the door to the garden', 0.5]); # If output is over 0.5 the doors will open
+outputDefinition.append(['I will turn on the heater', 0.5]) # If output is over 0.5 the heater will turn on
+outputDefinition.append(['I will open the door to the garden', 0.5]) # If output is over 0.5 the doors will open
 
 brain = Brain.Brain(len(inputDefinition), len(outputDefinition))
 
-MRI = CLI.CLI(brain);
-MRI.show();
+MRI = CLI.CLI(brain)
+MRI.show()
 
 successCounter = 0
-biggestSuccessStreak = 0;
-tryCounter = 0;
-iteration = 0;
+biggestSuccessStreak = 0
+tryCounter = 0
+iteration = 0
 
 def learn(brain):
     # Give answer.
     # Only learn from user input
     # Heater on / door open
     global successCounter
-    global biggestSuccessStreak;
-    global tryCounter;
-    global iteration;
-    global inputDefinition;
+    global biggestSuccessStreak
+    global tryCounter
+    global iteration
+    global inputDefinition
 
-    iteration += 1;
+    iteration += 1
 
     inputs = list()
     for(inputRowNr, inputRow) in enumerate(inputDefinition):
-        currentValue = round(random.uniform(inputRow[1], inputRow[2]), inputRow[3]);
+        currentValue = round(random.uniform(inputRow[1], inputRow[2]), inputRow[3])
         inputs.append(currentValue)
-        print inputRow[0].format((currentValue))
+        print inputRow[0].format(currentValue)
 
     brain.compute(inputs)
 
@@ -70,12 +70,12 @@ def learn(brain):
     else:
         text += "leave the door to the garden closed"
 
-    print text;
+    print text
 
-    inputError = False;
+    inputError = False
     allCorrect = True
 
-    heaterAnswer = raw_input("Was I right about the heater? [j/n]");
+    heaterAnswer = raw_input("Was I right about the heater? [j/n]")
     if (heaterAnswer == 'n'):
         enableHeater = 1 - enableHeater # Flip the action
         allCorrect = False
@@ -83,7 +83,7 @@ def learn(brain):
         inputError = True
         allCorrect = False
 
-    doorAnswer = raw_input("Was I right about the door? [j/n]");
+    doorAnswer = raw_input("Was I right about the door? [j/n]")
     if (doorAnswer == 'n'):
         openDoor = 1 - openDoor # Flip the action
     elif (doorAnswer != 'j'):
@@ -99,7 +99,7 @@ def learn(brain):
         else:
             tryCounter += 1
             if (successCounter > biggestSuccessStreak):
-                biggestSuccessStreak = successCounter;
+                biggestSuccessStreak = successCounter
             successCounter = 0
 
         brain.learn(inputs, [enableHeater, openDoor])
@@ -110,33 +110,33 @@ print ("Dear " + userName + ", I will try to make you comfortable. \n")
 
 for(i) in range(0, 500):
     # Wind, Temp, Sun, Rain, Hum
-    brain.learn([0, -10, 0, 0], [1, 0]);
-    brain.learn([4, 16, 0, 0], [1, 0]);
-    brain.learn([5, 20, 0, 0], [0, 1]);
-    brain.learn([8, 25, 0, 0], [0, 0]);
-    brain.learn([10, 30, 0, 0], [0, 0]);
+    brain.learn([0, -10, 0, 0], [1, 0])
+    brain.learn([4, 16, 0, 0], [1, 0])
+    brain.learn([5, 20, 0, 0], [0, 1])
+    brain.learn([8, 25, 0, 0], [0, 0])
+    brain.learn([10, 30, 0, 0], [0, 0])
 
     # Wind, Temp, Sun, Rain, Hum
-    brain.learn([5, 20, 37.5, 1], [0, 1]);
+    brain.learn([5, 20, 37.5, 1], [0, 1])
 
-    brain.learn([0, 20, 50, 1.5], [0, 0]);
-    brain.learn([0, 25, 50, 1.5], [0, 0]);
+    brain.learn([0, 20, 50, 1.5], [0, 0])
+    brain.learn([0, 25, 50, 1.5], [0, 0])
 
-    brain.learn([3, 10, 50, 2], [1, 0]);
+    brain.learn([3, 10, 50, 2], [1, 0])
 
-    brain.learn([4, 16, 62.5, 2.5], [1, 1]);
+    brain.learn([4, 16, 62.5, 2.5], [1, 1])
 
-    brain.learn([0, -10, 100, 3], [1, 0]);
-    brain.learn([4, 16, 100, 3], [1, 1]);
-    brain.learn([5, 20, 100, 3], [0, 0]);
-    brain.learn([10, 30, 100, 3], [0, 0]);
+    brain.learn([0, -10, 100, 3], [1, 0])
+    brain.learn([4, 16, 100, 3], [1, 1])
+    brain.learn([5, 20, 100, 3], [0, 0])
+    brain.learn([10, 30, 100, 3], [0, 0])
 
     print "."
 
-    MRI.show();
+    MRI.show()
 
 while 1:
-    learn(brain);
+    learn(brain)
     print("iteration:" + str(iteration) + "\ttryCounter:" + str(tryCounter) + "\tbiggestSuccessStreak:" + str(biggestSuccessStreak))
 
 exit(1)

@@ -16,6 +16,4 @@ mainWindow.addPopulation(population)
 
 mainWindow.setupLayout()
 
-mainWindow.teachPopulation()
-
 sys.exit(app.exec_())

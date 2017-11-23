@@ -58,7 +58,7 @@ class Brain:
     def fromGenome(genome, inputSize=6, outputSize=2):
         brain = Brain(inputSize, outputSize)
 
-        if (genome != None):
+        if (genome is not None):
             for (cellNr, cell) in enumerate(genome):
                 brain.layers[cell.x].neurons[cell.y].weights[cell.z] = cell.weight
         return brain
