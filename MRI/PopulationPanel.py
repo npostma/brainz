@@ -108,7 +108,7 @@ class PopulationPanel(QWidget):
 
     def computeClicked(self):
         if self.mainWindow.activePopulation is None:
-            self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
+            self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)
             return
 
         data = list()
@@ -122,7 +122,7 @@ class PopulationPanel(QWidget):
         index = self.populationSelection.currentIndex()
 
         if len(self.mainWindow.panels) <= index or index < 0:
-            self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
+            self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)
             return
 
             # Remove panels from te list
@@ -137,7 +137,7 @@ class PopulationPanel(QWidget):
         index = self.populationSelection.currentIndex()
 
         if len(self.mainWindow.panels) <= index or index < 0:
-            self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
+            self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)
             return
 
             # Remove panels from te list
@@ -156,37 +156,79 @@ class PopulationPanel(QWidget):
 
     def learnClicked(self):
         if self.mainWindow.activePopulation is None:
-            self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
+            self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)
             return
 
         inputData = list()
+        inputData.append(list())
+        numInSet = 0
         for (i, inputField) in enumerate(self.learnInputs):
             trainingSet = inputField.text()
-            trainingSet = trainingSet.split(';')
 
-            for (j, value) in enumerate(trainingSet[:-1]):
+            if (';' in trainingSet):
+                trainingSet = trainingSet.split(';')
 
-                if (j >= len(inputData)):
-                    inputData.insert(j, list())
+                for (j, value) in enumerate(trainingSet):
+                    if i == 0:
+                        numInSet += 1
+                    elif numInSet != len(trainingSet):
+                        self.mainWindow.windowStatusBar.showMessage('Input of dataset is not correct, sizes do not match'
+                                                                    , 5000)
+                        return
 
-                inputData[j].append(float(value))
+                    if (j >= len(inputData)):
+                        inputData.insert(j, list())
+
+                    if not value:
+                        self.mainWindow.windowStatusBar.showMessage('Input data of dataset is not correct', 5000)
+                        return
+
+                    inputData[j].append(float(value))
+            else:
+                if i == 0:
+                    numInSet = 1
+                elif numInSet != 1:
+                    self.mainWindow.windowStatusBar.showMessage('Input of dataset is not correct, sizes do not match',
+                                                                5000)
+                    return
+
+                if not trainingSet:
+                    self.mainWindow.windowStatusBar.showMessage('Input data of dataset is not correct', 5000)
+                    return
+
+                inputData[0].append(float(trainingSet))
 
         expectedOutput = list()
+        expectedOutput.append(list())
         for (i, outputField) in enumerate(self.learnOutputs):
             outputSet = outputField.text()
-            outputSet = outputSet.split(';')
 
-            for (j, value) in enumerate(outputSet[:-1]):
+            if (';' in outputSet):
+                outputSet = outputSet.split(';')
 
-                if (j >= len(expectedOutput)):
-                    expectedOutput.insert(j, list())
+                for (j, value) in enumerate(outputSet[:-1]):
 
-                expectedOutput[j].append(float(value))
+                    if (j >= len(expectedOutput)):
+                        expectedOutput.insert(j, list())
+
+                    expectedOutput[j].append(float(value))
+            else:
+                if not outputSet:
+                    self.mainWindow.windowStatusBar.showMessage('Output data of dataset is not correct', 5000)
+                    return
+                expectedOutput[0].append(float(outputSet))
 
         numberOfIterations = int(self.iterationsTextbox.text())
 
-        for(setNr, trainingSet) in enumerate(inputData):
-            self.mainWindow.teachPopulation(trainingSet, expectedOutput[setNr], numberOfIterations)
+        # Check if inputs are matching up
+        numInSet
+
+        for (setNr, trainingSet) in enumerate(inputData):
+            try:
+                self.mainWindow.teachPopulation(trainingSet, expectedOutput[setNr], numberOfIterations)
+            except IndexError:
+                self.mainWindow.windowStatusBar.showMessage('Output of dataset is not correct, Not matching input',
+                                                            5000)
 
     def destroyClicked(self):
         self.mainWindow.destroyPopulation(self.populationSelection.currentIndex())

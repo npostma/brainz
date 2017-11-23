@@ -177,7 +177,7 @@ class Window(QMainWindow):
 
     def teachPopulation(self, inputData, expectedOutputData, numberOfIterations):
         if self.activePopulation is None:
-            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
+            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)
             return
 
         for (index) in range(0, numberOfIterations):
@@ -189,7 +189,7 @@ class Window(QMainWindow):
 
     def breedPopulation(self):
         if self.activePopulation is None:
-            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
+            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)
             return
 
         newPopulation = self.activePopulation.breed()
@@ -197,7 +197,7 @@ class Window(QMainWindow):
 
     def clonePopulation(self):
         if self.activePopulation is None:
-            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
+            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)
             return
 
         newPopulation = self.activePopulation.clone()
@@ -206,7 +206,7 @@ class Window(QMainWindow):
     def destroyPopulation(self, index):
 
         if len(self.panels) <= index or index < 0:
-            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 2000)
+            self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)
             return
 
         # Remove panels from te list
