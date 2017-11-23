@@ -1,4 +1,4 @@
-import math
+
 import threading
 
 import Layer
@@ -44,8 +44,9 @@ class Brain:
 
         # Rule of thumb to determine wich size the neural network sould have
         # https://chatbotslife.com/machine-learning-for-dummies-part-2-270165fc1700
-        # Adding one extra neuron to the layer based on the rule of thumb gives better/accurate results. TODO: Find out why
-        if (self.inputSize > self.outputSize):
+        # Adding one extra neuron to the layer based on the rule of thumb gives better/accurate results.
+        # TODO: Find out why
+        if self.inputSize > self.outputSize:
             self.hiddenSize = self.inputSize
             self.numLayers = max(self.inputSize - self.outputSize, 3)
         else:
@@ -58,7 +59,7 @@ class Brain:
     def fromGenome(genome, inputSize=6, outputSize=2):
         brain = Brain(inputSize, outputSize)
 
-        if (genome is not None):
+        if genome is not None:
             for (cellNr, cell) in enumerate(genome):
                 brain.layers[cell.x].neurons[cell.y].weights[cell.z] = cell.weight
         return brain
@@ -80,14 +81,14 @@ class Brain:
             size = self.hiddenSize
 
             # Input layer if i == 0
-            if (i == 0):
+            if i == 0:
                 # First layer does not have a weight becouse there are no previous neurons
                 previousSize = 0
                 size = self.inputSize
-            elif (i == 1):
+            elif i == 1:
                 # First hidden layer. Has the weight of each input and thus it differs from the other hidden layers
                 previousSize = self.inputSize
-            elif (i == (self.numLayers - 1)):
+            elif i == (self.numLayers - 1):
                 # Output layer
                 size = self.outputSize
 
@@ -100,7 +101,7 @@ class Brain:
         # Anonymous function to SUM the total value in the collection
         fsum = lambda a, b: a + b
 
-        if (len(inputData) != self.layers[0].size()):
+        if len(inputData) != self.layers[0].size():
             raise ValueError('Size of inputdata:' + str(len(inputData)) + ' does not match size of inputlayer:' + str(
                 self.layers[0].size()))
 
@@ -122,8 +123,7 @@ class Brain:
                     values.append(neuronPrevLayer.value * neuron.weights[neuronNrPrevLayer])
 
                 value = reduce(fsum, values)
-                neuron.absoluteValue = value
-                neuron.value = self.sigmoid(value)
+                neuron.activate(value)
 
     def learn(self, inputData, outputData):
         self.learnCycle += 1
@@ -134,7 +134,6 @@ class Brain:
         t = threading.Thread(target=self.__learn, args=(inputData, outputData))
         self.learnThreads.append(t)
         t.start()
-
 
     def __learn(self, inputData, outputData):
         f = lambda a, b: a + b
@@ -173,7 +172,7 @@ class Brain:
             for (neuronNr, neuron) in enumerate(layer.neurons):
                 neuron.bias += self.learningRate * neuron.delta
 
-                if (layerNr > 0):
+                if layerNr > 0:
                     previousLayer = self.layers[layerNr - 1]
                     for (weightNr, weight) in enumerate(neuron.weights):
                         previousNeuron = previousLayer.neurons[weightNr]
@@ -185,17 +184,14 @@ class Brain:
     def errorFunction(self, value, expected):
         return value * (1 - value) * (expected - value)
 
-    def sigmoid(self, value):
-        # return 1 / (1 + math.exp(-value))
-        return 1 / (1 + math.exp((-1 * value) / 1))
 
+
+    # Determine the fitness for now by hand. So I give it a expected output. This wil NOT be used for learning but to determine how good the brain has become
+    # How closer to 1 how fitter the brain is. Note!: This is for one specific task. Not the overall fitness
     def measureFitness(self, expectedOutputData):
-        # Determine the fitness for now by hand. So I give it a expected output. This wil NOT be used for learning but to determine how good the brain has become
-        # How closer to 1 how fitter the brain is.
-
         output = self.getOutput()
 
-        if (len(output) != len(expectedOutputData)):
+        if len(output) != len(expectedOutputData):
             raise ValueError('Size of expectedOutputData:' + str(
                 len(expectedOutputData)) + ' does not match size of output:' + str(len(output)))
 

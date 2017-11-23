@@ -1,5 +1,5 @@
 import random
-
+import math
 
 class Neuron:
     # Name for debug indentification. This will be some sort of X-Y coordinate in the network
@@ -20,8 +20,8 @@ class Neuron:
     # Bias
     bias = 0
 
-    # Value for testing purposes
-    absoluteValue = 0
+    # Incomming value before activation
+    incomingValue = 0
 
     def __init__(self, numWeights, name):
 
@@ -41,3 +41,22 @@ class Neuron:
         print 'Weights:'
         for weight in self.weights:
             print ('\t\t\t' + str(weight))
+
+            # Activation function outputs a value between 0 and 1
+
+    def activate(self, incomingValue):
+        self.incomingValue = incomingValue
+        self.value = self.__sigmoid(self.incomingValue)
+
+    def __sigmoid(self, value):
+        # return 1 / (1 + math.exp(-value))
+        return 1 / (1 + math.exp((-1 * value) / 1))
+
+        # Activation function outputs a value between -1 and 1 (Just an wrapper for math.tanh(x))
+
+    def __tanh(self, value):
+        return math.tanh(value)
+
+        # Activation function outputs a value between 0 and inf
+    def __relu(self, value):
+        return max(0, value)
