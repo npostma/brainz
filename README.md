@@ -3,6 +3,8 @@ brainz
 
 Experimental project to understand the working of a FFNN
 
+![Alt text](/Documentation/Screenshots/Gui.png?raw=true "Guimode")
+
 ### Goal: 
 Measure/Analyze user behavior before he sends an order to the accountant. Try to predict if my brain can see when he would send it to the accountant. And try to predict if the order will get changed
 
