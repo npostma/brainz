@@ -3,6 +3,7 @@ import math
 
 class Neuron:
 
+
     ACTIVATION_SIGMOID = "sigmoid"
     ACTIVATION_TANH = "tanh"
     ACTIVATION_RELU = "relu"
@@ -32,6 +33,8 @@ class Neuron:
 
     activeActivation = None
 
+    activeActivationName = ""
+
     def __init__(self, numWeights, name):
 
         self.name = name
@@ -52,6 +55,7 @@ class Neuron:
         }
 
         self.activeActivation = self.activations[self.ACTIVATION_SIGMOID]
+        self.activeActivationName = self.ACTIVATION_SIGMOID
 
     def doPrint(self):
         print 'Neuron value: \t' + str(self.value)
@@ -59,9 +63,10 @@ class Neuron:
         for weight in self.weights:
             print ('\t\t\t' + str(weight))
 
-    def setAcitvationFunction(self, activationFunction):
+    def setActivationFunction(self, activationFunction):
         try:
             self.activeActivation = self.activations[activationFunction]
+            self.activeActivationName = activationFunction
         except IndexError:
             return
 

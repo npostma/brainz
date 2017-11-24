@@ -133,8 +133,12 @@ class Population:
                     genome.append(Cell.Cell(layerNr, neuronNr, weightNr, weight))
         return genome
 
-    def setAcitvationFunction(self, activationFunction):
+    def setActivationFunction(self, layerType, activationFunction):
         for (brainNr, brain) in enumerate(self.brains):
             for (layerNr, layer) in enumerate(brain.layers):
+
+                if(layer.type != layerType):
+                    continue
+
                 for (neuronNr, neuron) in enumerate(layer.neurons):
-                    neuron.setAcitvationFunction(activationFunction)
+                    neuron.setActivationFunction(activationFunction)

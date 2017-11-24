@@ -1,5 +1,5 @@
 from PyQt4.QtGui import *
-from AI import Neuron
+from AI import Neuron, Layer
 
 
 class PopulationPanel(QWidget):
@@ -32,8 +32,10 @@ class PopulationPanel(QWidget):
         self.populationSelection = None
 
     def setupLayout(self):
+
         verticalStack = QVBoxLayout()
         computeFormGrid = QFormLayout()
+        activationFunctionFormGrid = QFormLayout()
         learnFormGrid = QFormLayout()
 
         self.populationSelection = QComboBox()
@@ -58,11 +60,13 @@ class PopulationPanel(QWidget):
         self.iterationsTextbox.setText("500")
         learnFormGrid.addRow(QLabel("Num. of iterations:"), self.iterationsTextbox)
 
+        applyActivationFunction = QPushButton()
+        applyActivationFunction.clicked.connect(self.applyActivationClicked)
+        applyActivationFunction.setText("Change function")
 
-
-        submit = QPushButton()
-        submit.clicked.connect(self.computeClicked)
-        submit.setText("Compute")
+        compute = QPushButton()
+        compute.clicked.connect(self.computeClicked)
+        compute.setText("Compute")
 
         breed = QPushButton()
         breed.clicked.connect(self.breedClicked)
@@ -72,9 +76,9 @@ class PopulationPanel(QWidget):
         teach.clicked.connect(self.learnClicked)
         teach.setText("Learn")
 
-        Clone = QPushButton()
-        Clone.clicked.connect(self.cloneClicked)
-        Clone.setText("Clone")
+        clone = QPushButton()
+        clone.clicked.connect(self.cloneClicked)
+        clone.setText("Clone")
 
         destroy = QPushButton()
         destroy.clicked.connect(self.destroyClicked)
@@ -84,12 +88,12 @@ class PopulationPanel(QWidget):
         Show.clicked.connect(self.showClicked)
         Show.setText("Show")
 
-        Hide = QPushButton()
-        Hide.clicked.connect(self.hideClicked)
-        Hide.setText("Hide")
+        hide = QPushButton()
+        hide.clicked.connect(self.hideClicked)
+        hide.setText("Hide")
 
         verticalStack.addLayout(computeFormGrid)
-        verticalStack.addWidget(submit)
+        verticalStack.addWidget(compute)
 
         verticalStack.addLayout(learnFormGrid)
         verticalStack.addWidget(teach)
@@ -97,27 +101,49 @@ class PopulationPanel(QWidget):
         line = QFrame()
         line.setFrameShape(QFrame.HLine)
         line.setFrameShadow(QFrame.Plain)
-
         verticalStack.addWidget(line)
+
         verticalStack.addWidget(breed)
-        verticalStack.addWidget(Clone)
+        verticalStack.addWidget(clone)
         verticalStack.addWidget(Show)
-        verticalStack.addWidget(Hide)
+        verticalStack.addWidget(hide)
         verticalStack.addWidget(destroy)
 
-        activationFunctionSelect = QComboBox()
-        activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_SIGMOID)
-        activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_RELU)
-        activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_TANH)
-        activationFunctionSelect.activated[str].connect(self.activateActivationFunction)
-        verticalStack.addWidget(activationFunctionSelect)
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Plain)
+        verticalStack.addWidget(line)
+
+        self.layerTypeSelect = QComboBox()
+        self.layerTypeSelect.addItem(Layer.Layer.TYPE_HIDDEN)
+        self.layerTypeSelect.addItem(Layer.Layer.TYPE_OUTPUT)
+        # activationFunctionSelect.activated[str].connect(self.activateActivationFunction)
+        activationFunctionFormGrid.addRow(QLabel("LType:"), self.layerTypeSelect)
+
+        self.activationFunctionSelect = QComboBox()
+        self.activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_SIGMOID)
+        self.activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_RELU)
+        self.activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_TANH)
+        #activationFunctionSelect.activated[str].connect(self.activateActivationFunction)
+        activationFunctionFormGrid.addRow(QLabel("AFunction:"), self.activationFunctionSelect)
+
+        verticalStack.addLayout(activationFunctionFormGrid)
+
+        verticalStack.addWidget(applyActivationFunction)
+
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Plain)
+
+        verticalStack.addWidget(line)
 
         verticalStack.addStretch()
 
         self.setLayout(verticalStack)
 
-    def activateActivationFunction(self, option):
-        self.mainWindow.activePopulation.setAcitvationFunction(str(option))
+    def applyActivationClicked(self):
+        self.mainWindow.activePopulation.setActivationFunction(str(self.layerTypeSelect.currentText()), str(self.activationFunctionSelect.currentText()))
+        self.mainWindow.update()
 
     def computeClicked(self):
         if self.mainWindow.activePopulation is None:
@@ -126,6 +152,10 @@ class PopulationPanel(QWidget):
 
         data = list()
         for (i, inputField) in enumerate(self.computeInputs):
+            if not inputField.text():
+                self.mainWindow.windowStatusBar.showMessage('Missing compute data', 5000)
+                return
+
             data.append(float(inputField.text()))
 
         self.mainWindow.activePopulation.compute(data)

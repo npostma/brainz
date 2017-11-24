@@ -18,9 +18,11 @@ class BrainPanel(QWidget):
 
     lines = list()
 
-    strings = list()
+    neuronValueStrings = list()
 
     inputs = list()
+
+    functionNames = list()
 
     canvas = None
 
@@ -34,6 +36,7 @@ class BrainPanel(QWidget):
         self.brain = brain
         self.canvas = Canvas.Canvas()
         self.inputs = list()
+        self.functionNames = list()
 
         # Static drawables
         self.rectangles = list()
@@ -41,7 +44,8 @@ class BrainPanel(QWidget):
 
         # Dynmic drawables
         self.lines = list()
-        self.strings = list()
+        self.neuronValueStrings = list()
+        self.brainStrings = list()
 
         self.drawingMaxWidth = 0
         self.drawingMaxHeight = 0
@@ -118,9 +122,13 @@ class BrainPanel(QWidget):
 
     def getStrings(self):
         strings = list()
-        for (x, stringList) in enumerate(self.strings):
+
+        for (x, stringList) in enumerate(self.neuronValueStrings):
             for (y, string) in enumerate(stringList):
                 strings.append(string)
+
+        for (x, functionName) in enumerate(self.functionNames):
+            strings.append(functionName)
 
         return strings
 
@@ -133,10 +141,12 @@ class BrainPanel(QWidget):
         self.createLines()
 
     def createStrings(self):
+        self.functionNames = list()
+
         for (layerNr, layer) in enumerate(self.brain.layers):
 
-            if (layerNr >= len(self.strings)):
-                self.strings.insert(layerNr, list())
+            if (layerNr >= len(self.neuronValueStrings)):
+                self.neuronValueStrings.insert(layerNr, list())
 
             for (neuronNr, neuron) in enumerate(layer.neurons):
                 centerPoint = self.points[layerNr][neuronNr] - Point.Point(20, 12)
@@ -144,12 +154,20 @@ class BrainPanel(QWidget):
                 # String objects are not removed. Only updated if available
                 # TODO: If this is faster then removing / creating then rewrite for Rect/Lines
                 # TODO: Implement metrics to prove performance improvements
-                if (neuronNr >= len(self.strings[layerNr])):
+                if (neuronNr >= len(self.neuronValueStrings[layerNr])):
                     # self.strings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.absoluteValue)))
-                    self.strings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.value)))
+                    self.neuronValueStrings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.value)))
                 else:
                     # self.strings[layerNr][neuronNr] = Label.Label(centerPoint, str(neuron.absoluteValue))
-                    self.strings[layerNr][neuronNr] = Label.Label(centerPoint, str(neuron.value))
+                    self.neuronValueStrings[layerNr][neuronNr] = Label.Label(centerPoint, str(neuron.value))
+
+                functionNamePoint = centerPoint + Point.Point(0, 30)
+
+                # Inputlayers do not use the activation function. Therefore hide the label
+                if layerNr != 0:
+                    self.functionNames.append(Label.Label(functionNamePoint, str(neuron.activeActivationName)))
+
+
 
     def createRectangles(self):
         # Editable vars

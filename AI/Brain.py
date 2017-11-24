@@ -37,6 +37,7 @@ class Brain:
     def __init__(self, inputSize=6, outputSize=2):
         self.learnCycle = 0
 
+        self.fitness = 99
         self.inputSize = inputSize
         self.outputSize = outputSize
 
@@ -85,12 +86,17 @@ class Brain:
                 # First layer does not have a weight becouse there are no previous neurons
                 previousSize = 0
                 size = self.inputSize
+                layer.setType(Layer.Layer.TYPE_INPUT)
             elif i == 1:
                 # First hidden layer. Has the weight of each input and thus it differs from the other hidden layers
                 previousSize = self.inputSize
+                layer.setType(Layer.Layer.TYPE_HIDDEN)
             elif i == (self.numLayers - 1):
                 # Output layer
                 size = self.outputSize
+                layer.setType(Layer.Layer.TYPE_OUTPUT)
+            else:
+                layer.setType(Layer.Layer.TYPE_HIDDEN)
 
             for j in range(0, size):
                 layer.addNeuron(Neuron.Neuron(previousSize, str(i) + '-' + str(j)))
