@@ -106,10 +106,10 @@ class Population:
         daughter = motherGenome[0:partOneLength] + dadGenome[partOneLength:genomeLength]
         son = motherGenome[0:partTwoLength] + dadGenome[partTwoLength:genomeLength]
 
-        # Mutation part. What am I trying to do? (No clue wichs values, thats the fun part to analyze) so
-        # - Determine how many cells are mutated this is between 0 and 5 percen
+        # Mutation part. What am I trying to do? (No clue which values, that's the fun part to analyze) so
+        # - Determine how many cells are mutated this is between 0 and 5 percent
         # - Select random cells to mutate
-        # - Dermine how big the weights of the cells are mutated. This will be somewhere between -5 and 5%
+        # - Determine how big the weights of the cells are mutated. This will be somewhere between -5 and 5%
         numberOfCellsToMutate = int(random.random() * 5)
         mutationRate = random.uniform(-0.05, 0.05)
 
