@@ -187,6 +187,9 @@ class Window(QMainWindow):
             # Prevent main application from freezing!
             self.mainApplication.processEvents()
 
+        # One time update at the end. If it all goes to fast you want to see the change.
+        self.update()
+
     def breedPopulation(self):
         if self.activePopulation is None:
             self.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)

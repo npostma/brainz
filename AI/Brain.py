@@ -1,4 +1,3 @@
-
 import threading
 
 import Layer
@@ -65,7 +64,7 @@ class Brain:
                 brain.layers[cell.x].neurons[cell.y].weights[cell.z] = cell.weight
 
                 # Do this only when we process the first weight. All the other names are the same/redundant
-                if(cell.z == 0):
+                if cell.z == 0:
                     brain.layers[cell.x].neurons[cell.y].setActivationFunction(cell.activationFunctionName)
         return brain
 
@@ -112,7 +111,7 @@ class Brain:
         fsum = lambda a, b: a + b
 
         if len(inputData) != self.layers[0].size():
-            raise ValueError('Size of inputdata:' + str(len(inputData)) + ' does not match size of inputlayer:' + str(
+            raise ValueError('Size of input data:' + str(len(inputData)) + ' does not match size of inputlayer:' + str(
                 self.layers[0].size()))
 
         # Give input to the sensors
@@ -139,7 +138,7 @@ class Brain:
         self.learnCycle += 1
 
         self.compute(inputData)
-        # return self.__learn(inputData, outputData)
+        return self.__learn(inputData, outputData)
 
         t = threading.Thread(target=self.__learn, args=(inputData, outputData))
         self.learnThreads.append(t)
@@ -194,9 +193,27 @@ class Brain:
     def errorFunction(self, value, expected):
         return value * (1 - value) * (expected - value)
 
+    # Measuring fitness based on some expected data is not really testing the brain how good it is become.
+    # Therefor:
+    # 1 - we keep track of what its been told
+    # 2 - Compute against those lines
+    # 3 - Measure fitness(es)
+    # 4 - calculate some super value that really tells how good this brain has become
+    def measureSuperFitness(self, expectedOutputData):
+        output = self.getOutput()
 
+        if len(output) != len(expectedOutputData):
+            raise ValueError('Size of expectedOutputData:' + str(
+                len(expectedOutputData)) + ' does not match size of output:' + str(len(output)))
 
-    # Determine the fitness for now by hand. So I give it a expected output. This wil NOT be used for learning but to determine how good the brain has become
+        error = 1
+        for (i, value) in enumerate(output):
+            error += abs(value - expectedOutputData[i])
+
+        self.fitness = 1 / error
+
+    # Determine the fitness for now by hand. So I give it a expected output.
+    # This wil NOT be used for learning but to determine how good the brain has become
     # How closer to 1 how fitter the brain is. Note!: This is for one specific task. Not the overall fitness
     def measureFitness(self, expectedOutputData):
         output = self.getOutput()
