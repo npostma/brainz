@@ -63,6 +63,10 @@ class Brain:
         if genome is not None:
             for (cellNr, cell) in enumerate(genome):
                 brain.layers[cell.x].neurons[cell.y].weights[cell.z] = cell.weight
+
+                # Do this only when we process the first weight. All the other names are the same/redundant
+                if(cell.z == 0):
+                    brain.layers[cell.x].neurons[cell.y].setActivationFunction(cell.activationFunctionName)
         return brain
 
     def getOutput(self):

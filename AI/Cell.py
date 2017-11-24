@@ -11,8 +11,12 @@ class Cell:
     # Value
     weight = 0
 
-    def __init__(self, x, y, z, weight):
+    # For the sake of simplicity, we store this here. Con: causes redundant data for a neuron. Not harmfull, just waste
+    activatationFunctionName = ""
+
+    def __init__(self, x, y, z, weight, activationFunctionName):
         self.x = x
         self.y = y
         self.z = z
         self.weight = weight
+        self.activationFunctionName = activationFunctionName
