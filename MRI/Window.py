@@ -140,7 +140,7 @@ class Window(QMainWindow):
 
         self.populationPanel.updatePopulationList()
 
-        self.setWindowTitle("Taking over the world is the new hello world *EvIl LaUgHteR")
+        self.setWindowTitle("Taking over the world is the new hello world *EvIl LaUgHteR*")
 
         self.move(0, 0)
         self.show()

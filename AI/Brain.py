@@ -2,7 +2,7 @@ import threading
 
 import Layer
 import Neuron
-
+import hashlib
 
 class Brain:
     layers = list()
@@ -25,22 +25,31 @@ class Brain:
     # Todo: Some value for computing. Find out what its good for
     learningMomentum = 0.9
 
-    # Keep track of the fitness score. Used for sorting the population
-    fitness = 99
+    # Keep track of the fitness score. This is the fitness of the last compute action
+    fitness = 0
+
+    # The overall fitness based on all all cases
+    # Used for sorting the population
+    overallFitness = 0
+
 
     # Keep track of how many times something is learned
     learnCycle = 0
 
-    learnThreads = []
+    learnThreads = list()
+
+    studyCases = {}
 
     def __init__(self, inputSize=6, outputSize=2):
         self.learnCycle = 0
 
-        self.fitness = 99
+        self.fitness = 0
+        self.overallFitness = 0
         self.inputSize = inputSize
         self.outputSize = outputSize
 
-        self.learnThreads = []
+        self.learnThreads = list()
+        self.studyCases = {}
 
         # Rule of thumb to determine wich size the neural network sould have
         # https://chatbotslife.com/machine-learning-for-dummies-part-2-270165fc1700
@@ -147,6 +156,12 @@ class Brain:
     def __learn(self, inputData, outputData):
         f = lambda a, b: a + b
 
+        # Store all cases. This could get big. Time will tell
+        # TODO: Check memory usage and performance after a lot of learning
+        dataString = "-".join(map(str, inputData))
+        hashObject = hashlib.sha1(dataString)
+        self.studyCases[hashObject.hexdigest()] = {'input': inputData, 'expectedOutput': outputData}
+
         # Calculate the gradient (NL: helling) for the output layer
         for (neuronNr, neuron) in enumerate(self.layers[-1].neurons):
             neuron.delta = self.errorFunction(neuron.value, outputData[neuronNr])
@@ -199,18 +214,21 @@ class Brain:
     # 2 - Compute against those lines
     # 3 - Measure fitness(es)
     # 4 - calculate some super value that really tells how good this brain has become
-    def measureSuperFitness(self, expectedOutputData):
-        output = self.getOutput()
+    def measureOverallFitness(self):
 
-        if len(output) != len(expectedOutputData):
-            raise ValueError('Size of expectedOutputData:' + str(
-                len(expectedOutputData)) + ' does not match size of output:' + str(len(output)))
+        fsum = lambda a, b: a + b
 
-        error = 1
-        for (i, value) in enumerate(output):
-            error += abs(value - expectedOutputData[i])
+        fitnessResults = list()
 
-        self.fitness = 1 / error
+        for(caseNr, case) in self.studyCases.iteritems():
+            self.compute(case['input'])
+            localFitness = self.measureFitness(case['expectedOutput'])
+
+            fitnessResults.append(self.measureFitness(case['expectedOutput']))
+
+
+        self.overallFitness = reduce(fsum, fitnessResults)
+        self.overallFitness = self.overallFitness / len(fitnessResults)
 
     # Determine the fitness for now by hand. So I give it a expected output.
     # This wil NOT be used for learning but to determine how good the brain has become
@@ -227,3 +245,10 @@ class Brain:
             error += abs(value - expectedOutputData[i])
 
         self.fitness = 1 / error
+
+        # If local fitness is not realy good, penalize
+        # Todo: find out what the best values for these are
+        if (self.fitness < 0.9):
+            self.fitness -= 0.25
+
+        return self.fitness

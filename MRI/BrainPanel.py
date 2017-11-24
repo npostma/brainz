@@ -101,7 +101,7 @@ class BrainPanel(QWidget):
     def update(self):
         self.updateDynamicDrawables()
 
-        self.setWindowTitle("Fitness: " + str(self.brain.fitness) + " Learncycle:" + str(self.brain.learnCycle))
+        self.setWindowTitle("OverallF: " + str(round(self.brain.overallFitness, 5)) + " LastF: " + str(round(self.brain.fitness, 5)) + " Cycle:" + str(self.brain.learnCycle))
 
         self.canvas.reset()
         self.canvas.addRectanges(self.rectangles)

@@ -38,17 +38,12 @@ class Population:
         # Let the whole population learn the same data
         for (brainNr, brain) in enumerate(self.brains):
             brain.learn(inputData, outputData)
-            brain.measureFitness(outputData)
+            brain.measureOverallFitness()
 
     def compute(self, inputData):
         # Let the whole population compute the same data
         for (brainNr, brain) in enumerate(self.brains):
             brain.compute(inputData)
-
-    def showmeasureFitness(self):
-        for (brainNr, brain) in enumerate(self.brains):
-            print (str(brain.fitness))
-        print('')
 
     def showOutput(self):
         for (brainNr, brain) in enumerate(self.brains):
@@ -63,7 +58,7 @@ class Population:
         numberOfBrains = len(self.brains)
 
         # Sort brain on fitness. After Breeding with neighbours this will give the best 'result'
-        self.brains = sorted(self.brains, key=lambda brain: brain.fitness)
+        self.brains = sorted(self.brains, key=lambda brain: brain.overallFitness)
 
         for (brainNr, dadBrain) in enumerate(self.brains):
             # As long as we can find a mother brain
