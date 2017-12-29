@@ -40,6 +40,7 @@ class SocketClientProcessor(QThread):
                 except ValueError as err:
                     print("Data received (" + message + ") was in incorrect format.")
 
+                print("Thanks");
                 self.connection.sendall("Thanks");
 
             recvBuffer = strings[-1]
