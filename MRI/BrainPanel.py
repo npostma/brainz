@@ -172,6 +172,7 @@ class BrainPanel(QWidget):
     def createRectangles(self):
         # Editable vars
         layerXOffset = 10
+
         layerMargin = 60
         layerWidth = 60
 
