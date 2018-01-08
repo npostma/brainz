@@ -32,7 +32,7 @@ class SocketServer(QThread):
         print("SocketServer: Client connection.")
 
         # Handle client connections in a new thread
-        clientProcessor = SocketClientProcessor.SocketClientProcessor(connection, address);
+        clientProcessor = SocketClientProcessor.SocketClientProcessor(connection, address)
 
         self.connect(clientProcessor, SIGNAL("learn"), self.emitLearnSignal)
         self.connect(clientProcessor, SIGNAL("compute"), self.emitComputeSignal)

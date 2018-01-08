@@ -1,8 +1,8 @@
 import random
 import math
 
-class Neuron:
 
+class Neuron:
     TYPE_DEFAULT = 'default'
     TYPE_BIAS = 'bias'
 
@@ -32,13 +32,16 @@ class Neuron:
     # Type
     type = ""
 
-    # Incomming value before activation
+    # Incoming value before activation
     incomingValue = 0
 
+    # Name to function map for fast function execution.
     activations = {}
 
+    # Active activation function
     activeActivation = None
 
+    # Name of the active activation function
     activeActivationName = ""
 
     def __init__(self, numWeights, name):
@@ -89,7 +92,7 @@ class Neuron:
 
     # Activation function outputs a value between -1 and 1 (Just an wrapper for math.tanh(x))
     def __tanh(self, value):
-     return math.tanh(value)
+        return math.tanh(value)
 
     # Activation function outputs a value between 0 and inf
     def __relu(self, value):
@@ -99,4 +102,3 @@ class Neuron:
     def __none(self, value):
         # Dont use value. This activation function doesnt do anything.
         return self.value
-

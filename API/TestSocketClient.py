@@ -18,5 +18,5 @@ for(i) in range(0, 1000):
     socket.sendall("{\"command\": \"compute\", \"input\": [1,0], \"expectedOutput\": [1]}" + '\0')
 
 # Gracefull shutdown
-socket.shutdown(1);
-socket.close();
+socket.shutdown(1)
+socket.close()

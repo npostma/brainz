@@ -5,14 +5,19 @@ from PyQt4.QtCore import *
 
 
 class Line(QLine):
+    # Red 0 - 255
     r = 0
 
+    # Green 0 - 255
     g = 0
 
+    # Blue 0 - 255
     b = 0
 
+    # Alpha 0 - 255
     a = 255
 
+    # Line width
     width = 1
 
     def __init__(self, a, b):

@@ -1,6 +1,3 @@
-from AI import Neuron
-
-
 class Layer:
     TYPE_INPUT = "input"
     TYPE_HIDDEN = "hidden"
@@ -29,9 +26,9 @@ class Layer:
     def addBiasNeuron(self, neuron):
         self.neurons.append(neuron)
         # Make sure the settings are correct for a bias neuron before adding them
-        neuron.type = Neuron.Neuron.TYPE_BIAS
+        neuron.type = neuron.TYPE_BIAS
         neuron.setActivationFunction(neuron.ACTIVATION_NONE)
         self.biasCount += 1
 
     def size(self):
-        return len(self.neurons) - self.biasCount;
+        return len(self.neurons) - self.biasCount

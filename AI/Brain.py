@@ -1,11 +1,11 @@
-import threading
-
 from AI import Neuron
 
 import Layer
 import hashlib
 
+
 class Brain:
+    # Collection of all layers. (Input, Hidden and output)
     layers = list()
 
     # Number of neurons for the input layer
@@ -39,21 +39,18 @@ class Brain:
     # Bias value. If None no bias is used in the brain
     biasValue = 1
 
-    learnThreads = list()
-
+    # Keep track of all the leaning data. To calculate a overall fitness we examine all the given expected outputs
     studyCases = {}
 
     def __init__(self, inputSize=6, outputSize=2):
-        self.learnCycle = 0
 
+        # Set default values
+        self.learnCycle = 0
         self.fitness = 0
         self.overallFitness = 0
         self.inputSize = inputSize
         self.outputSize = outputSize
-
         self.biasValue = 1
-
-        self.learnThreads = list()
         self.studyCases = {}
 
         # Rule of thumb to determine wich size the neural network sould have
@@ -127,19 +124,17 @@ class Brain:
                 # All layers execpt output
                 biasNeuron = Neuron.Neuron(0, str(i) + '-' + str(size))
                 biasNeuron.value = self.biasValue
-                layer.addBiasNeuron(biasNeuron);
+                layer.addBiasNeuron(biasNeuron)
 
             self.layers.append(layer)
 
         if (self.biasValue is not None):
             # If bias is used the size gets +1
             # Adding this in the end prevents adding normal nurons
-            self.hiddenSize +=1
+            self.hiddenSize += 1
             self.inputSize += 1
 
     def compute(self, inputData):
-        # Anonymous function to SUM the total value in the collection
-        fsum = lambda a, b: a + b
 
         if len(inputData) != self.layers[0].size():
             raise ValueError('Size of input data:' + str(len(inputData)) + ' does not match size of inputlayer:' + str(
@@ -147,7 +142,7 @@ class Brain:
 
         # Give input to the sensors
         for (neuronNr, inputNeuron) in enumerate(self.layers[0].neurons):
-            if inputNeuron.type == Neuron.Neuron.TYPE_BIAS:
+            if inputNeuron.type == inputNeuron.TYPE_BIAS:
                 continue
 
             inputNeuron.value = inputData[neuronNr]
@@ -159,9 +154,9 @@ class Brain:
             # Loop through the neurons in the current layer
             for (neuronNr, neuron) in enumerate(self.layers[i].neurons):
 
-                if neuron.type == Neuron.Neuron.TYPE_BIAS:
+                if neuron.type == neuron.TYPE_BIAS:
                     # Dont caluculate the value of a bias neuron. It has no weights incomming
-                    continue;
+                    continue
 
                 values = list()
                 for (neuronNrPrevLayer, neuronPrevLayer) in enumerate(previousLayer.neurons):
@@ -169,7 +164,8 @@ class Brain:
                     # This value will be stored in the current neuron. This way the value will traverse through our network
                     values.append(neuronPrevLayer.value * neuron.weights[neuronNrPrevLayer])
 
-                value = reduce(fsum, values)
+                #  SUM the total value in the collection
+                value = reduce(lambda a, b: a + b, values)
                 neuron.activate(value)
 
     def learn(self, inputData, outputData):
@@ -178,13 +174,7 @@ class Brain:
         self.compute(inputData)
         return self.__learn(inputData, outputData)
 
-        t = threading.Thread(target=self.__learn, args=(inputData, outputData))
-        self.learnThreads.append(t)
-        t.start()
-
     def __learn(self, inputData, outputData):
-        f = lambda a, b: a + b
-
         # Store all cases. This could get big. Time will tell
         # TODO: Check memory usage and performance after a lot of learning
         dataString = "-".join(map(str, inputData))
@@ -214,12 +204,12 @@ class Brain:
                 for (nextNeuronNr, nextNeuron) in enumerate(nextLayer.neurons):
                     if nextNeuron.type == nextNeuron.TYPE_BIAS:
                         # A bias neuron has no incomming synaps. So this can be skipped
-                        continue;
+                        continue
 
                     delta = nextNeuron.delta * nextNeuron.weights[neuronNr]
                     deltas.append(delta)
 
-                error = reduce(f, deltas)
+                error = reduce(lambda a, b: a + b, deltas)
 
                 neuron.delta = neuron.value * (1 - neuron.value) * error
 
@@ -249,18 +239,14 @@ class Brain:
     # 4 - calculate some super value that really tells how good this brain has become
     def measureOverallFitness(self):
 
-        fsum = lambda a, b: a + b
-
         fitnessResults = list()
 
-        for(caseNr, case) in self.studyCases.iteritems():
+        for (caseNr, case) in self.studyCases.iteritems():
             self.compute(case['input'])
             localFitness = self.measureFitness(case['expectedOutput'])
+            fitnessResults.append(localFitness)
 
-            fitnessResults.append(self.measureFitness(case['expectedOutput']))
-
-
-        self.overallFitness = reduce(fsum, fitnessResults)
+        self.overallFitness = reduce(lambda a, b: a + b, fitnessResults)
         self.overallFitness = self.overallFitness / len(fitnessResults)
 
     # Determine the fitness for now by hand. So I give it a expected output.

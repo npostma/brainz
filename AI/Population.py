@@ -9,10 +9,15 @@ class Population:
     # Number of brains in this population
     populationSize = 12
 
+    # Number of input neurons
+    # This needs to be the same for all brains in this population
     inputSize = 0
 
+    # Number of output neurons
+    # This needs to be the same for all brains in this population
     outputSize = 0
 
+    # Collection of brains
     brains = list()
 
     def __init__(self, inputSize=6, outputSize=2, populationSize=2):
@@ -109,9 +114,9 @@ class Population:
         mutationRate = random.uniform(-0.05, 0.05)
 
         for (i) in range(0, numberOfCellsToMutate):
-            cellnumber = int(random.uniform(0, genomeLength))
-            daughter[cellnumber].weight *= mutationRate
-            son[cellnumber].weight *= mutationRate
+            cellNumber = int(random.uniform(0, genomeLength))
+            daughter[cellNumber].weight *= mutationRate
+            son[cellNumber].weight *= mutationRate
 
         children.append(son)
         children.append(daughter)
