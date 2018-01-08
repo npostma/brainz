@@ -24,3 +24,8 @@ class Rectangle(QRect):
     def getColor(self):
         color = QColor(self.r, self.g, self.b, self.a)
         return color
+
+    def colorOrange(self):
+        self.r = 255
+        self.g = 165
+        self.b = 0

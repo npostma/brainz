@@ -2,7 +2,7 @@ import socket
 
 import time
 
-HOST = '10.102.10.69'
+HOST = '10.102.10.11'
 PORT = 1337
 SIZEOF_UINT32 = 4
 

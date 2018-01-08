@@ -234,6 +234,11 @@ class BrainPanel(QWidget):
                     neuronHeight
                 )
 
+                # Color bias neurons orange
+                if neuron.type == neuron.TYPE_BIAS:
+                    rect.colorOrange()
+
+
                 self.rectangles.append(rect)
 
     def createLines(self):

@@ -3,7 +3,10 @@ import math
 
 class Neuron:
 
+    TYPE_DEFAULT = 'default'
+    TYPE_BIAS = 'bias'
 
+    ACTIVATION_NONE = "none"
     ACTIVATION_SIGMOID = "sigmoid"
     ACTIVATION_TANH = "tanh"
     ACTIVATION_RELU = "relu"
@@ -25,6 +28,9 @@ class Neuron:
 
     # Bias
     bias = 0
+
+    # Type
+    type = ""
 
     # Incomming value before activation
     incomingValue = 0
@@ -49,6 +55,7 @@ class Neuron:
             self.gradient.append(0)
 
         self.activations = {
+            self.ACTIVATION_NONE: self.__none,
             self.ACTIVATION_SIGMOID: self.__sigmoid,
             self.ACTIVATION_TANH: self.__tanh,
             self.ACTIVATION_RELU: self.__relu,
@@ -56,6 +63,7 @@ class Neuron:
 
         self.activeActivation = self.activations[self.ACTIVATION_SIGMOID]
         self.activeActivationName = self.ACTIVATION_SIGMOID
+        self.type = self.TYPE_DEFAULT
 
     def doPrint(self):
         print 'Neuron value: \t' + str(self.value)
@@ -83,7 +91,12 @@ class Neuron:
     def __tanh(self, value):
      return math.tanh(value)
 
-        # Activation function outputs a value between 0 and inf
+    # Activation function outputs a value between 0 and inf
     def __relu(self, value):
         return max(0, value)
+
+    # Not a activation function. Return value. Used for biased neurons and such
+    def __none(self, value):
+        # Dont use value. This activation function doesnt do anything.
+        return self.value
 

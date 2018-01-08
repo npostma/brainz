@@ -1,7 +1,8 @@
 import threading
 
+from AI import Neuron
+
 import Layer
-import Neuron
 import hashlib
 
 class Brain:
@@ -32,9 +33,11 @@ class Brain:
     # Used for sorting the population
     overallFitness = 0
 
-
     # Keep track of how many times something is learned
     learnCycle = 0
+
+    # Bias value. If None no bias is used in the brain
+    biasValue = 1
 
     learnThreads = list()
 
@@ -48,13 +51,14 @@ class Brain:
         self.inputSize = inputSize
         self.outputSize = outputSize
 
+        self.biasValue = 1
+
         self.learnThreads = list()
         self.studyCases = {}
 
         # Rule of thumb to determine wich size the neural network sould have
         # https://chatbotslife.com/machine-learning-for-dummies-part-2-270165fc1700
         # Adding one extra neuron to the layer based on the rule of thumb gives better/accurate results.
-        # TODO: Find out why
         if self.inputSize > self.outputSize:
             self.hiddenSize = self.inputSize
             self.numLayers = max(self.inputSize - self.outputSize, 3)
@@ -111,9 +115,27 @@ class Brain:
                 layer.setType(Layer.Layer.TYPE_HIDDEN)
 
             for j in range(0, size):
-                layer.addNeuron(Neuron.Neuron(previousSize, str(i) + '-' + str(j)))
+
+                previosSizeOffset = 0
+                if (self.biasValue is not None):
+                    # If we have a bias the previos layer is one bigger.
+                    previosSizeOffset = 1
+
+                layer.addNeuron(Neuron.Neuron(previousSize + previosSizeOffset, str(i) + '-' + str(j)))
+
+            if (self.biasValue is not None) and (i is not (self.numLayers - 1)):
+                # All layers execpt output
+                biasNeuron = Neuron.Neuron(0, str(i) + '-' + str(size))
+                biasNeuron.value = self.biasValue
+                layer.addBiasNeuron(biasNeuron);
 
             self.layers.append(layer)
+
+        if (self.biasValue is not None):
+            # If bias is used the size gets +1
+            # Adding this in the end prevents adding normal nurons
+            self.hiddenSize +=1
+            self.inputSize += 1
 
     def compute(self, inputData):
         # Anonymous function to SUM the total value in the collection
@@ -125,6 +147,9 @@ class Brain:
 
         # Give input to the sensors
         for (neuronNr, inputNeuron) in enumerate(self.layers[0].neurons):
+            if inputNeuron.type == Neuron.Neuron.TYPE_BIAS:
+                continue
+
             inputNeuron.value = inputData[neuronNr]
 
         # Loop through the layers starting from the first hidden layer
@@ -134,9 +159,13 @@ class Brain:
             # Loop through the neurons in the current layer
             for (neuronNr, neuron) in enumerate(self.layers[i].neurons):
 
+                if neuron.type == Neuron.Neuron.TYPE_BIAS:
+                    # Dont caluculate the value of a bias neuron. It has no weights incomming
+                    continue;
+
                 values = list()
                 for (neuronNrPrevLayer, neuronPrevLayer) in enumerate(previousLayer.neurons):
-                    # The value of eachs previous neuron multiplied with the weight in the current layer
+                    # The value of each previous neuron multiplied with the weight in the current layer
                     # This value will be stored in the current neuron. This way the value will traverse through our network
                     values.append(neuronPrevLayer.value * neuron.weights[neuronNrPrevLayer])
 
@@ -174,7 +203,7 @@ class Brain:
         for (layerNr) in layersReversed:
 
             # NL: 1 layer naar rechts kijkend, om de delta te bereken.
-            # Dus een delta tussen laatste hidden layer en output., 1e hidden layer met de 2e hidden layer, input layer met de 1e hidden layer.
+            # Dus een delta tussen laatste hidden layer en output. 1e hidden layer met de 2e hidden layer, input layer met de 1e hidden layer.
             # Watch one layer to the right to calculate the delta
             # Eg. a delta between: the last layer and output, 1th hidden layer and 2th hidden layer, input layer and 1e hidden layer
             nextLayer = self.layers[layerNr + 1]
@@ -183,6 +212,10 @@ class Brain:
 
                 deltas = list()
                 for (nextNeuronNr, nextNeuron) in enumerate(nextLayer.neurons):
+                    if nextNeuron.type == nextNeuron.TYPE_BIAS:
+                        # A bias neuron has no incomming synaps. So this can be skipped
+                        continue;
+
                     delta = nextNeuron.delta * nextNeuron.weights[neuronNr]
                     deltas.append(delta)
 

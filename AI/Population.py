@@ -136,4 +136,9 @@ class Population:
                     continue
 
                 for (neuronNr, neuron) in enumerate(layer.neurons):
+
+                    if (neuron.type != neuron.TYPE_DEFAULT):
+                        # Only change the activation function for neurons that uses them
+                        continue
+
                     neuron.setActivationFunction(activationFunction)
