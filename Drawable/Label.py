@@ -1,10 +1,9 @@
 # http://doc.qt.io/qt-4.8/classes.html
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
 
 
-class Label(QString):
+class Label():
     # Red 0 - 255
     r = 0
 
@@ -24,8 +23,6 @@ class Label(QString):
     point = None
 
     def __init__(self, point, text):
-        super(Label, self).__init__(QString.fromAscii(text))
-
         self.data = text
         self.point = point
         self.a = 255
@@ -35,10 +32,17 @@ class Label(QString):
         self.width = 1
 
     def getText(self):
-        return self
+        return str(self.data)
 
     def getPoint(self):
         return self.point
+
+    def getX(self):
+        x = self.point.x()
+        return x
+
+    def getY(self):
+        return self.point.y()
 
     def getColor(self):
         color = QColor(self.r, self.g, self.b, self.a)

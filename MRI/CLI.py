@@ -10,9 +10,9 @@ class CLI:
         self.brain = brain
 
     def showOutput(self):
-        print('Fitness:' + str(self.brain.fitness))
+        print(('Fitness:' + str(self.brain.fitness)))
         for value in self.brain.getOutput():
-            print str(value)
+            print(str(value))
         print('')
 
     def show(self):
@@ -77,14 +77,14 @@ class CLI:
 
     def printLayers(self):
         for (layerNr, neurons) in enumerate(self.brain.layers):
-            print 'Layer ' + str(layerNr)
+            print('Layer ' + str(layerNr))
             for (neuronNr, neuron) in enumerate(neurons):
-                print ('\r\r neuron:' + str(neuronNr))
+                print(('\r\r neuron:' + str(neuronNr)))
                 neuron.doPrint()
 
     def doPrintSettings(self):
-        print('Num neurons in input layer: \t' + str(self.brain.inputSize))
-        print('Num neurons in hidden layer: \t' + str(self.brain.hiddenSize))
-        print('Num neurons in output layer: \t' + str(self.brain.outputSize))
-        print('Num layers: \t' + str(self.brain.numLayers))
+        print(('Num neurons in input layer: \t' + str(self.brain.inputSize)))
+        print(('Num neurons in hidden layer: \t' + str(self.brain.hiddenSize)))
+        print(('Num neurons in output layer: \t' + str(self.brain.outputSize)))
+        print(('Num layers: \t' + str(self.brain.numLayers)))
         print('\n')

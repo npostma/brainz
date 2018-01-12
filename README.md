@@ -28,26 +28,11 @@ If an oder is paid and is send off to the shipping party  then most likely:
 - 2 - The order won't be changed
 
 ### Requerements
-- Python 2.7
-- PIP
-- PyQT4
+- Python 3.6
+- PyQT5
 
 ### Installation (Windows).
-- Download PIP script into python folder
->https://bootstrap.pypa.io/3.2/get-pip.py
-- Install PIP (If not yet installed Python2 (Version < 2.7.9) or Python3 (Version < 3.4) 
-> python get-pip.py
-- Update to latest
-> python -m pip install --upgrade pip
-- Check PATH variable
-> To check if it is already in your PATH variable, type echo %PATH% at the CMD prompt.
-To add the path of your pip installation to your PATH variable, you can use the Control Panel or the setx command. For example:
-- Add python scripts to path
->setx PATH "%PATH%;C:\Python27\Scripts"
-- Download PyQt4‑4.11.4‑cp27‑cp27m‑win_amd64.whl
-> https://www.lfd.uci.edu/~gohlke/pythonlibs/#pyqt4
-- Install the wheel
-> pip install PyQt4-4.11.4-cp27-cp27m-win_amd64.whl
+- PyQT5 can be added in PyCharm as an module by the interperter settings
 
 ### Using the socket server.
 There is a basic socket server available when starting the GUI mode. This is for handing incoming messages to train the network. Or to compute.

@@ -5,7 +5,7 @@ from AI import Brain
 
 # This is not realy working. I think i need to much Q & A to get any result.
 
-userName = raw_input("Hi I am your househelp. I will keep you comfortable. What is your name? \n")
+userName = input("Hi I am your househelp. I will keep you comfortable. What is your name? \n")
 
 # [Statement, Min, Max, roundingOnDecimals]
 inputDefinition = list()
@@ -47,14 +47,14 @@ def learn(brain):
     for(inputRowNr, inputRow) in enumerate(inputDefinition):
         currentValue = round(random.uniform(inputRow[1], inputRow[2]), inputRow[3])
         inputs.append(currentValue)
-        print inputRow[0].format(currentValue)
+        print(inputRow[0].format(currentValue))
 
     brain.compute(inputs)
 
     enableHeater = int(brain.getOutput()[0] > 0.5)
     openDoor = int(brain.getOutput()[1] > 0.5)
 
-    print "\n================================================"
+    print("\n================================================")
 
     text = "I know what to do! I will "
 
@@ -70,12 +70,12 @@ def learn(brain):
     else:
         text += "leave the door to the garden closed"
 
-    print text
+    print(text)
 
     inputError = False
     allCorrect = True
 
-    heaterAnswer = raw_input("Was I right about the heater? [j/n]")
+    heaterAnswer = input("Was I right about the heater? [j/n]")
     if (heaterAnswer == 'n'):
         enableHeater = 1 - enableHeater # Flip the action
         allCorrect = False
@@ -83,16 +83,16 @@ def learn(brain):
         inputError = True
         allCorrect = False
 
-    doorAnswer = raw_input("Was I right about the door? [j/n]")
+    doorAnswer = input("Was I right about the door? [j/n]")
     if (doorAnswer == 'n'):
         openDoor = 1 - openDoor # Flip the action
     elif (doorAnswer != 'j'):
         inputError = True
 
     if(inputError):
-        print "Input error. Cant learn from it"
+        print("Input error. Cant learn from it")
     else:
-        print "Learning output: [" + str(enableHeater) + ", " + str(openDoor) + "]"
+        print("Learning output: [" + str(enableHeater) + ", " + str(openDoor) + "]")
 
         if(allCorrect):
             successCounter += 1
@@ -104,9 +104,9 @@ def learn(brain):
 
         brain.learn(inputs, [enableHeater, openDoor])
 
-    print "\n\n"
+    print("\n\n")
 
-print ("Dear " + userName + ", I will try to make you comfortable. \n")
+print(("Dear " + userName + ", I will try to make you comfortable. \n"))
 
 for(i) in range(0, 500):
     # Wind, Temp, Sun, Rain, Hum
@@ -131,12 +131,12 @@ for(i) in range(0, 500):
     brain.learn([5, 20, 100, 3], [0, 0])
     brain.learn([10, 30, 100, 3], [0, 0])
 
-    print "."
+    print(".")
 
     MRI.show()
 
 while 1:
     learn(brain)
-    print("iteration:" + str(iteration) + "\ttryCounter:" + str(tryCounter) + "\tbiggestSuccessStreak:" + str(biggestSuccessStreak))
+    print(("iteration:" + str(iteration) + "\ttryCounter:" + str(tryCounter) + "\tbiggestSuccessStreak:" + str(biggestSuccessStreak)))
 
 exit(1)

@@ -69,10 +69,10 @@ class Neuron:
         self.type = self.TYPE_DEFAULT
 
     def doPrint(self):
-        print 'Neuron value: \t' + str(self.value)
-        print 'Weights:'
+        print('Neuron value: \t' + str(self.value))
+        print('Weights:')
         for weight in self.weights:
-            print ('\t\t\t' + str(weight))
+            print(('\t\t\t' + str(weight)))
 
     def setActivationFunction(self, activationFunction):
         try:

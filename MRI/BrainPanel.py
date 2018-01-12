@@ -1,5 +1,6 @@
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
 
 from Drawable import Rectangle, Point, Line, Label
 
@@ -72,7 +73,7 @@ class BrainPanel(QWidget):
         submit.setText("Compute")
 
         lastIndex = 0
-        for (i) in range(0, self.brain.inputSize):
+        for (i) in range(0, (self.brain.inputSize - self.brain.biasSize)):
             decimalInput = QLineEdit()
             self.inputs.append(decimalInput)
             decimalInput.setValidator(QDoubleValidator(0.99, 9.99, 2))

@@ -1,5 +1,5 @@
 import socket
-from PyQt4.QtCore import *
+from PyQt5.QtCore import *
 import json
 
 from API import SocketClientProcessor
@@ -12,6 +12,9 @@ SIZEOF_UINT32 = 4
 # Socket server as a worker thread
 class SocketServer(QThread):
     clientProcessors = []
+
+    learn = pyqtSignal(list, list)
+    compute = pyqtSignal(list, list)
 
     def __init__(self, parent=None):
         super(SocketServer, self).__init__(parent)
@@ -34,16 +37,16 @@ class SocketServer(QThread):
         # Handle client connections in a new thread
         clientProcessor = SocketClientProcessor.SocketClientProcessor(connection, address)
 
-        self.connect(clientProcessor, SIGNAL("learn"), self.emitLearnSignal)
-        self.connect(clientProcessor, SIGNAL("compute"), self.emitComputeSignal)
+        clientProcessor.learn.connect(self.emitLearnSignal)
+        clientProcessor.compute.connect(self.emitComputeSignal)
 
         clientProcessor.start()
         self.clientProcessors.append(clientProcessor)
 
     # Pass through the signal from the client processor ... not sure if this is the right way
     def emitLearnSignal(self, a, b):
-        self.emit(SIGNAL("learn"), a, b)
+        self.learn.emit(a, b)
 
     # Pass through signal from the client processor ... not sure if this is the right way
     def emitComputeSignal(self, a, b):
-        self.emit(SIGNAL("compute"), a, b)
+        self.compute.emit(a, b)

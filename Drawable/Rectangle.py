@@ -1,7 +1,7 @@
 # http://doc.qt.io/qt-4.8/classes.html
 
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 
 
 class Rectangle(QRect):

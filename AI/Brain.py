@@ -1,7 +1,8 @@
 from AI import Neuron
 
-import Layer
+from . import Layer
 import hashlib
+from functools import reduce
 
 
 class Brain:
@@ -42,6 +43,9 @@ class Brain:
     # Keep track of all the leaning data. To calculate a overall fitness we examine all the given expected outputs
     studyCases = {}
 
+    # Number of biased nuerons per layer
+    biasSize = 0
+
     def __init__(self, inputSize=6, outputSize=2):
 
         # Set default values
@@ -80,7 +84,7 @@ class Brain:
 
     def getOutput(self):
         # Return the output layer
-        return map(lambda neuron: neuron.value, self.layers[len(self.layers) - 1].neurons)
+        return [neuron.value for neuron in self.layers[len(self.layers) - 1].neurons]
 
     def createLayers(self):
         self.layers = list()
@@ -133,6 +137,7 @@ class Brain:
             # Adding this in the end prevents adding normal nurons
             self.hiddenSize += 1
             self.inputSize += 1
+            self.biasSize += 1
 
     def compute(self, inputData):
 
@@ -178,6 +183,7 @@ class Brain:
         # Store all cases. This could get big. Time will tell
         # TODO: Check memory usage and performance after a lot of learning
         dataString = "-".join(map(str, inputData))
+        dataString = dataString.encode()
         hashObject = hashlib.sha1(dataString)
         self.studyCases[hashObject.hexdigest()] = {'input': inputData, 'expectedOutput': outputData}
 
@@ -188,7 +194,7 @@ class Brain:
         # Bereken een gradient (helling) voor de hidden en input layers, van rechts naar links.
         # Calculate a gradient for the hidden and input layers. From right to left
         # Eg. 4 layers? Then range: 2,1,0
-        layersReversed = range(len(self.layers) - 2, -1, -1)
+        layersReversed = list(range(len(self.layers) - 2, -1, -1))
 
         for (layerNr) in layersReversed:
 
@@ -241,7 +247,7 @@ class Brain:
 
         fitnessResults = list()
 
-        for (caseNr, case) in self.studyCases.iteritems():
+        for (caseNr, case) in self.studyCases.items():
             self.compute(case['input'])
             localFitness = self.measureFitness(case['expectedOutput'])
             fitnessResults.append(localFitness)

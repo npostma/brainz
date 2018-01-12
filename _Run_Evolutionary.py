@@ -43,9 +43,9 @@ for(generationNr) in range(1, 100) :
     nextGeneration.compute([1, 0.09, 0, 0.04, 0.01, 0.00], [0, 0.3]) # I expected someting like: [0, 0.3]
 
     thirdGeneration = nextGeneration.breed()
-    print('===============================GENERATION ' + str(generationNr) + '================================')
+    print(('===============================GENERATION ' + str(generationNr) + '================================'))
     nextGeneration.showOutput()
 
 end = datetime.datetime.now()
-print('Duration:' + str(end-start))
+print(('Duration:' + str(end-start)))
 exit(1)

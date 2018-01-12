@@ -1,6 +1,7 @@
 # http://doc.qt.io/qt-4.8/classes.html
-from PyQt4.QtGui import *
-from PyQt4.QtCore import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import *
 import math, random, sys
 
 from Drawable import Point
@@ -100,4 +101,4 @@ class Canvas(QWidget):
 
     def drawString(self, painter, string):
         painter.setPen(string.getPen())
-        painter.drawText(string.getPoint(), string.getText())
+        painter.drawText(string.getX(), string.getY(), string.getText())

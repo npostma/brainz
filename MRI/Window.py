@@ -2,8 +2,8 @@ import sys
 import time
 import sip
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtWidgets import *
 from API import SocketServer
 
 from MRI import BrainPanel, PopulationPanel
@@ -55,8 +55,10 @@ class Window(QMainWindow):
 
     def startListening(self):
         self.SocketServer = SocketServer.SocketServer()
-        self.connect(self.SocketServer, SIGNAL("learn"), self.learnFromExternalData)
-        self.connect(self.SocketServer, SIGNAL("compute"), self.computeExternalData)
+
+        self.SocketServer.learn.connect(self.learnFromExternalData)
+        self.SocketServer.compute.connect(self.computeExternalData)
+
         self.SocketServer.start()
 
     def learnFromExternalData(self, input, expectedOutput):
@@ -68,7 +70,6 @@ class Window(QMainWindow):
         self.timedUpdate()
 
     def addPanel(self, panel, populationNr):
-
         if populationNr >= len(self.panels):
             self.panels.insert(populationNr, list())
 
@@ -81,7 +82,7 @@ class Window(QMainWindow):
 
     def setupLayout(self):
         if self.initialized == True:
-            raise StandardError("Already started")
+            raise Exception("Already started")
 
         self.leftDock = QDockWidget("Population control", self)
         self.populationPanel = PopulationPanel.PopulationPanel(self, self.activePopulation.inputSize,

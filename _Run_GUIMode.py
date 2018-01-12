@@ -1,10 +1,19 @@
 import sys
-from PyQt4 import QtGui
+from PyQt5 import QtCore, QtGui, QtWidgets
 
 from MRI import Window
 from AI import  Population
 
-app = QtGui.QApplication(sys.argv)
+sys._excepthook = sys.excepthook
+def exception_hook(exctype, value, traceback):
+    print(exctype, value, traceback)
+    sys._excepthook(exctype, value, traceback)
+    sys.exit(1)
+#  excepthook override. Otherwise PyQT5 exceptions wont show
+sys.excepthook = exception_hook
+
+
+app = QtWidgets.QApplication(sys.argv)
 
 mainWindow = Window.Window(app)
 

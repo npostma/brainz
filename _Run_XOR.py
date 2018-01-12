@@ -20,7 +20,7 @@ try:
         brain.learn([1, 1], [0])
 
 except ValueError as err:
-    print(err.args)
+    print((err.args))
 
 
 # Now our brain leared some cases over and over. Now its time to start asking the brain questions
@@ -43,5 +43,5 @@ brain.measureFitness([0])
 visual.showOutput()
 
 end = datetime.datetime.now()
-print('Duration:' + str(end-start))
+print(('Duration:' + str(end-start)))
 exit(1)

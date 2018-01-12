@@ -1,5 +1,5 @@
 import socket
-from PyQt4.QtCore import *
+from PyQt5.QtCore import *
 
 import json
 
@@ -10,6 +10,11 @@ SIZEOF_UINT32 = 4
 
 # Socket server as a worker thread
 class SocketClientProcessor(QThread):
+
+    # Register signals that the clientProcessor can emit
+    learn = pyqtSignal(list, list, name='learn')
+    compute = pyqtSignal(list, list, name='compute')
+
     def __init__(self, connection, address, parent=None):
         super(SocketClientProcessor, self).__init__(parent)
 
@@ -36,9 +41,14 @@ class SocketClientProcessor(QThread):
                 try:
                     data = json.loads(message)
 
-                    self.emit(SIGNAL(data['command']), data['input'], data['expectedOutput'])
+                    if data['command'] == 'learn':
+                        self.learn.emit(data['input'], data['expectedOutput'])
+                    elif data['command'] == 'compute':
+                        self.compute.emit(data['input'], data['expectedOutput'])
+
+                    # self.emit(SIGNAL(data['command']), data['input'], data['expectedOutput'])
                 except ValueError as err:
-                    print("Data received (" + message + ") was in incorrect format.")
+                    print(("Data received (" + message + ") was in incorrect format."))
 
                 print("Thanks")
                 # self.connection.sendall("Thanks")
