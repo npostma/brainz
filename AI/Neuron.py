@@ -1,6 +1,8 @@
 import random
 import math
 
+from AI import Synapse
+
 
 class Neuron:
     TYPE_DEFAULT = 'default'
@@ -11,17 +13,14 @@ class Neuron:
     ACTIVATION_TANH = "tanh"
     ACTIVATION_RELU = "relu"
 
-    # Name for debug indentification. This will be some sort of X-Y coordinate in the network
+    # Name for debug identification. This will be some sort of X-Y coordinate in the network
     name = ''
 
     # Neuron value
     value = 0
 
-    # Weight of the synapse
-    weights = list()
-
-    # Gradient (NL: Helling)
-    gradient = list()
+    # Relation to list to neurons in the previous layer (Adjacency list). Also containing the weight
+    synapses = list()
 
     # Delta
     delta = 0
@@ -44,18 +43,12 @@ class Neuron:
     # Name of the active activation function
     activeActivationName = ""
 
-    def __init__(self, numWeights, name):
-
+    def __init__(self, name):
         self.name = name
         self.value = random.uniform(-1, 1)
-        self.weights = list()
-        self.gradient = list()
+        self.synapses = list()
         self.delta = 0
         self.bias = 0
-
-        for i in range(0, numWeights):
-            self.weights.append(random.uniform(-1, 1))
-            self.gradient.append(0)
 
         self.activations = {
             self.ACTIVATION_NONE: self.__none,
@@ -68,11 +61,10 @@ class Neuron:
         self.activeActivationName = self.ACTIVATION_SIGMOID
         self.type = self.TYPE_DEFAULT
 
-    def doPrint(self):
-        print('Neuron value: \t' + str(self.value))
-        print('Weights:')
-        for weight in self.weights:
-            print(('\t\t\t' + str(weight)))
+    def generateSynapses(self, layer):
+        for (neuronNr, neuron) in enumerate(layer.neurons):
+            synapse = Synapse.Synapse(random.uniform(-1, 1), 0, neuron, self)
+            self.synapses.append(synapse)
 
     def setActivationFunction(self, activationFunction):
         try:

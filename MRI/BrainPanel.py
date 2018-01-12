@@ -155,16 +155,14 @@ class BrainPanel(QWidget):
                 # String objects are not removed. Only updated if available
                 # TODO: If this is faster then removing / creating then rewrite for Rect/Lines
                 # TODO: Implement metrics to prove performance improvements
-                if (neuronNr >= len(self.neuronValueStrings[layerNr])):
-                    # self.strings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.absoluteValue)))
+                if neuronNr >= len(self.neuronValueStrings[layerNr]):
                     self.neuronValueStrings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.value)))
                 else:
-                    # self.strings[layerNr][neuronNr] = Label.Label(centerPoint, str(neuron.absoluteValue))
                     self.neuronValueStrings[layerNr][neuronNr] = Label.Label(centerPoint, str(neuron.value))
 
                 functionNamePoint = centerPoint + Point.Point(0, 30)
 
-                # Inputlayers do not use the activation function. Therefore hide the label
+                # Input layers do not use the activation function. Therefore hide the label
                 if layerNr != 0:
                     self.functionNames.append(Label.Label(functionNamePoint, str(neuron.activeActivationName)))
 
@@ -186,7 +184,8 @@ class BrainPanel(QWidget):
         neuronWidth = layerWidth - (2 * neuronMargin)
         neuronHeight = neuronWidth
 
-        # Hidden layers are the biggest layers. Use these to calculate a offset for the input en output layer. So that it will align nicely
+        # Hidden layers are the biggest layers. Use these to calculate a offset for the input en output layer.
+        # So that it will align nicely
         maxNeuronsInLayer = self.brain.hiddenSize
 
         self.drawingMaxWidth = 0
@@ -239,7 +238,6 @@ class BrainPanel(QWidget):
                 if neuron.type == neuron.TYPE_BIAS:
                     rect.colorOrange()
 
-
                 self.rectangles.append(rect)
 
     def createLines(self):
@@ -253,20 +251,20 @@ class BrainPanel(QWidget):
                 if (neuronNr >= len(self.lines[layerNr])):
                     self.lines[layerNr].insert(neuronNr, list())
 
-                for (weightNr, weight) in enumerate(neuron.weights):
+                for (synapseNr, synapse) in enumerate(neuron.synapses):
                     xA = layerNr - 1
-                    yA = weightNr
+                    yA = synapseNr
 
                     xB = layerNr
                     yB = neuronNr
 
                     line = Line.Line(self.points[xA][yA], self.points[xB][yB])
-                    line.setWeight(weight)
+                    line.setWeight(synapse.weight)
 
-                    self.lines[layerNr][neuronNr].insert(weightNr, line)
+                    self.lines[layerNr][neuronNr].insert(synapseNr, line)
 
     def updateLines(self):
         for (layerNr, layer) in enumerate(self.brain.layers):
             for (neuronNr, neuron) in enumerate(layer.neurons):
-                for (weightNr, weight) in enumerate(neuron.weights):
-                    self.lines[layerNr][neuronNr][weightNr].setWeight(weight)
+                for (synapseNr, synapse) in enumerate(neuron.synapses):
+                    self.lines[layerNr][neuronNr][synapseNr].setWeight(synapse.weight)

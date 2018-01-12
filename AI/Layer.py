@@ -25,6 +25,7 @@ class Layer:
 
     def addBiasNeuron(self, neuron):
         self.neurons.append(neuron)
+
         # Make sure the settings are correct for a bias neuron before adding them
         neuron.type = neuron.TYPE_BIAS
         neuron.setActivationFunction(neuron.ACTIVATION_NONE)

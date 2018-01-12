@@ -75,7 +75,7 @@ class Brain:
 
         if genome is not None:
             for (cellNr, cell) in enumerate(genome):
-                brain.layers[cell.x].neurons[cell.y].weights[cell.z] = cell.weight
+                brain.layers[cell.x].neurons[cell.y].synapses[cell.z].weight = cell.weight
 
                 # Do this only when we process the first weight. All the other names are the same/redundant
                 if cell.z == 0:
@@ -117,24 +117,30 @@ class Brain:
 
             for j in range(0, size):
 
-                previosSizeOffset = 0
-                if (self.biasValue is not None):
-                    # If we have a bias the previos layer is one bigger.
-                    previosSizeOffset = 1
+                neuron = Neuron.Neuron(str(i) + '-' + str(j))
 
-                layer.addNeuron(Neuron.Neuron(previousSize + previosSizeOffset, str(i) + '-' + str(j)))
+                # Create all the relations between the current neuron and all in the previous layer
+                if i > 0:
+                    neuron.generateSynapses(self.layers[i-1])
+
+                layer.addNeuron(neuron)
 
             if (self.biasValue is not None) and (i is not (self.numLayers - 1)):
-                # All layers execpt output
-                biasNeuron = Neuron.Neuron(0, str(i) + '-' + str(size))
+                # All layers except output
+                biasNeuron = Neuron.Neuron(str(i) + '-' + str(size))
                 biasNeuron.value = self.biasValue
+
+                # Create all the relations between the current neuron and all in the previous layer
+                if (i > 0):
+                    biasNeuron.generateSynapses(self.layers[i - 1])
+
                 layer.addBiasNeuron(biasNeuron)
 
             self.layers.append(layer)
 
-        if (self.biasValue is not None):
+        if self.biasValue is not None:
             # If bias is used the size gets +1
-            # Adding this in the end prevents adding normal nurons
+            # Adding this in the end prevents adding normal neurons
             self.hiddenSize += 1
             self.inputSize += 1
             self.biasSize += 1
@@ -142,7 +148,7 @@ class Brain:
     def compute(self, inputData):
 
         if len(inputData) != self.layers[0].size():
-            raise ValueError('Size of input data:' + str(len(inputData)) + ' does not match size of inputlayer:' + str(
+            raise ValueError('Size of input data:' + str(len(inputData)) + ' does not match size of input layer:' + str(
                 self.layers[0].size()))
 
         # Give input to the sensors
@@ -160,14 +166,15 @@ class Brain:
             for (neuronNr, neuron) in enumerate(self.layers[i].neurons):
 
                 if neuron.type == neuron.TYPE_BIAS:
-                    # Dont caluculate the value of a bias neuron. It has no weights incomming
+                    # Don't calculate the value of a bias neuron. It has no incoming synapse(s)
                     continue
 
                 values = list()
                 for (neuronNrPrevLayer, neuronPrevLayer) in enumerate(previousLayer.neurons):
                     # The value of each previous neuron multiplied with the weight in the current layer
-                    # This value will be stored in the current neuron. This way the value will traverse through our network
-                    values.append(neuronPrevLayer.value * neuron.weights[neuronNrPrevLayer])
+                    # This value will be stored in the current neuron.
+                    # This way the value will traverse through our network
+                    values.append(neuronPrevLayer.value * neuron.synapses[neuronNrPrevLayer].weight)
 
                 #  SUM the total value in the collection
                 value = reduce(lambda a, b: a + b, values)
@@ -187,21 +194,19 @@ class Brain:
         hashObject = hashlib.sha1(dataString)
         self.studyCases[hashObject.hexdigest()] = {'input': inputData, 'expectedOutput': outputData}
 
-        # Calculate the gradient (NL: helling) for the output layer
+        # Calculate the gradient for the output layer
         for (neuronNr, neuron) in enumerate(self.layers[-1].neurons):
             neuron.delta = self.errorFunction(neuron.value, outputData[neuronNr])
 
-        # Bereken een gradient (helling) voor de hidden en input layers, van rechts naar links.
         # Calculate a gradient for the hidden and input layers. From right to left
         # Eg. 4 layers? Then range: 2,1,0
         layersReversed = list(range(len(self.layers) - 2, -1, -1))
 
         for (layerNr) in layersReversed:
 
-            # NL: 1 layer naar rechts kijkend, om de delta te bereken.
-            # Dus een delta tussen laatste hidden layer en output. 1e hidden layer met de 2e hidden layer, input layer met de 1e hidden layer.
             # Watch one layer to the right to calculate the delta
-            # Eg. a delta between: the last layer and output, 1th hidden layer and 2th hidden layer, input layer and 1e hidden layer
+            # Eg. a delta between:
+            # the last layer and output, 1th hidden layer and 2th hidden layer, input layer and 1e hidden layer
             nextLayer = self.layers[layerNr + 1]
 
             for (neuronNr, neuron) in enumerate(self.layers[layerNr].neurons):
@@ -209,17 +214,16 @@ class Brain:
                 deltas = list()
                 for (nextNeuronNr, nextNeuron) in enumerate(nextLayer.neurons):
                     if nextNeuron.type == nextNeuron.TYPE_BIAS:
-                        # A bias neuron has no incomming synaps. So this can be skipped
+                        # A bias neuron has no incoming synapse. So this can be skipped
                         continue
 
-                    delta = nextNeuron.delta * nextNeuron.weights[neuronNr]
+                    delta = nextNeuron.delta * nextNeuron.synapses[neuronNr].weight
                     deltas.append(delta)
 
                 error = reduce(lambda a, b: a + b, deltas)
 
                 neuron.delta = neuron.value * (1 - neuron.value) * error
 
-        # Herbereken het gewicht op basis van de helling
         # Recalculate the weight based on the gradient
         for (layerNr, layer) in enumerate(self.layers):
             for (neuronNr, neuron) in enumerate(layer.neurons):
@@ -227,12 +231,12 @@ class Brain:
 
                 if layerNr > 0:
                     previousLayer = self.layers[layerNr - 1]
-                    for (weightNr, weight) in enumerate(neuron.weights):
-                        previousNeuron = previousLayer.neurons[weightNr]
+                    for (synapseNr, synapse) in enumerate(neuron.synapses):
+                        previousNeuron = previousLayer.neurons[synapseNr]
                         value = previousNeuron.value
                         delta = self.learningRate * neuron.delta * value
-                        neuron.weights[weightNr] += delta + self.learningMomentum * neuron.gradient[weightNr]
-                        neuron.gradient[weightNr] = delta
+                        neuron.synapses[synapseNr].weight += delta + self.learningMomentum * neuron.synapses[synapseNr].gradient
+                        neuron.synapses[synapseNr].gradient = delta
 
     def errorFunction(self, value, expected):
         return value * (1 - value) * (expected - value)
@@ -271,9 +275,9 @@ class Brain:
 
         self.fitness = 1 / error
 
-        # If local fitness is not realy good, penalize
+        # If local fitness is not really good, penalize
         # Todo: find out what the best values for these are
-        if (self.fitness < 0.9):
+        if self.fitness < 0.9:
             self.fitness -= 0.25
 
         return self.fitness

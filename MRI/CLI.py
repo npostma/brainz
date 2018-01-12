@@ -75,13 +75,6 @@ class CLI:
             # sys.stdout.write('[' + str(numTabs) + '-' + str(length) + ']\t')
             sys.stdout.write('\t')
 
-    def printLayers(self):
-        for (layerNr, neurons) in enumerate(self.brain.layers):
-            print('Layer ' + str(layerNr))
-            for (neuronNr, neuron) in enumerate(neurons):
-                print(('\r\r neuron:' + str(neuronNr)))
-                neuron.doPrint()
-
     def doPrintSettings(self):
         print(('Num neurons in input layer: \t' + str(self.brain.inputSize)))
         print(('Num neurons in hidden layer: \t' + str(self.brain.hiddenSize)))

@@ -68,7 +68,7 @@ class Population:
         for (brainNr, dadBrain) in enumerate(self.brains):
             # As long as we can find a mother brain
             # Note: For now a bit strange but for every step the mom becomes the dad :-D
-            if ((brainNr + 1) < numberOfBrains):
+            if (brainNr + 1) < numberOfBrains:
                 motherBrain = self.brains[brainNr + 1]
 
                 motherGenome = self.createGenome(motherBrain)
@@ -129,8 +129,8 @@ class Population:
         genome = list()
         for (layerNr, layer) in enumerate(brain.layers):
             for (neuronNr, neuron) in enumerate(layer.neurons):
-                for (weightNr, weight) in enumerate(neuron.weights):
-                    genome.append(Cell.Cell(layerNr, neuronNr, weightNr, weight, neuron.activeActivationName))
+                for (synapseNr, synapse) in enumerate(neuron.synapses):
+                    genome.append(Cell.Cell(layerNr, neuronNr, synapseNr, synapse.weight, neuron.activeActivationName))
         return genome
 
     def setActivationFunction(self, layerType, activationFunction):

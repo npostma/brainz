@@ -1,6 +1,5 @@
 import socket
 from PyQt5.QtCore import *
-import json
 
 from API import SocketClientProcessor
 

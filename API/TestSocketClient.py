@@ -17,6 +17,6 @@ for(i) in range(0, 1000):
 
     socket.sendall(str("{\"command\": \"compute\", \"input\": [1,0], \"expectedOutput\": [1]}" + '\0').encode())
 
-# Gracefull shutdown
+# Graceful shutdown
 socket.shutdown(1)
 socket.close()
