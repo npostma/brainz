@@ -12,7 +12,15 @@ class Layer:
     # bias neuron count
     biasCount = 0
 
-    def __init__(self):
+    # Reference to the brain.
+    layer = None
+
+    # Layer number. Layers get numbered from left to right.
+    number = 0
+
+    def __init__(self, brain, number):
+        self.brain = brain
+        self.number = number
         self.neurons = list()
         self.type = None
         self.biasCount = 0

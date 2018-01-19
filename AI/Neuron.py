@@ -43,8 +43,15 @@ class Neuron:
     # Name of the active activation function
     activeActivationName = ""
 
-    def __init__(self, name):
-        self.name = name
+    # Reference to the layer.
+    layer = None
+
+    # Neuron number. Neurons get numbered from top to bottom.
+    number = 0
+
+    def __init__(self, layer, number: int):
+        self.layer = layer
+        self.number = number
         self.value = random.uniform(-1, 1)
         self.synapses = list()
         self.delta = 0

@@ -17,8 +17,8 @@ class Rectangle(QRect):
     # Alpha 0 - 255
     a = 255
 
-    def __init__(self, x, y, w, h):
-        super(Rectangle, self).__init__(x, y, w, h)
+    def __init__(self, topLeft, bottomRight):
+        super(Rectangle, self).__init__(topLeft, bottomRight)
 
         self.a = 255
         self.r = 0

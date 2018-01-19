@@ -90,7 +90,7 @@ class Brain:
         self.layers = list()
         for i in range(0, self.numLayers):
             # Every layer is a collection of neurons
-            layer = Layer.Layer()
+            layer = Layer.Layer(self, i)
 
             # Is used to determine the weight of each neuron
             previousSize = self.hiddenSize
@@ -117,22 +117,18 @@ class Brain:
 
             for j in range(0, size):
 
-                neuron = Neuron.Neuron(str(i) + '-' + str(j))
+                neuron = Neuron.Neuron(layer, j)
 
                 # Create all the relations between the current neuron and all in the previous layer
                 if i > 0:
-                    neuron.generateSynapses(self.layers[i-1])
+                    neuron.generateSynapses(self.layers[i - 1])
 
                 layer.addNeuron(neuron)
 
             if (self.biasValue is not None) and (i is not (self.numLayers - 1)):
                 # All layers except output
-                biasNeuron = Neuron.Neuron(str(i) + '-' + str(size))
+                biasNeuron = Neuron.Neuron(layer, size)
                 biasNeuron.value = self.biasValue
-
-                # Create all the relations between the current neuron and all in the previous layer
-                if (i > 0):
-                    biasNeuron.generateSynapses(self.layers[i - 1])
 
                 layer.addBiasNeuron(biasNeuron)
 
@@ -176,7 +172,7 @@ class Brain:
                     # This way the value will traverse through our network
                     values.append(neuronPrevLayer.value * neuron.synapses[neuronNrPrevLayer].weight)
 
-                #  SUM the total value in the collection
+                # SUM the total value in the collection
                 value = reduce(lambda a, b: a + b, values)
                 neuron.activate(value)
 
@@ -235,7 +231,8 @@ class Brain:
                         previousNeuron = previousLayer.neurons[synapseNr]
                         value = previousNeuron.value
                         delta = self.learningRate * neuron.delta * value
-                        neuron.synapses[synapseNr].weight += delta + self.learningMomentum * neuron.synapses[synapseNr].gradient
+                        neuron.synapses[synapseNr].weight += delta + self.learningMomentum * neuron.synapses[
+                            synapseNr].gradient
                         neuron.synapses[synapseNr].gradient = delta
 
     def errorFunction(self, value, expected):

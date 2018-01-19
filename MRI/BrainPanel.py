@@ -1,8 +1,8 @@
-from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 from Drawable import Rectangle, Point, Line, Label
+from Drawable.Calculator import Metrics
 
 # Convert brain into a set of drawable objects
 from MRI import Canvas
@@ -31,6 +31,8 @@ class BrainPanel(QWidget):
 
     drawingMaxHeight = 0
 
+    canvasTool = None
+
     def __init__(self, brain):
         super(BrainPanel, self).__init__()
 
@@ -43,13 +45,15 @@ class BrainPanel(QWidget):
         self.rectangles = list()
         self.points = list()
 
-        # Dynmic drawables
+        # Dynamic drawables
         self.lines = list()
         self.neuronValueStrings = list()
         self.brainStrings = list()
 
         self.drawingMaxWidth = 0
         self.drawingMaxHeight = 0
+
+        self.canvasTool = Metrics.Metrics()
 
         self.createStaticDrawables()
 
@@ -58,7 +62,6 @@ class BrainPanel(QWidget):
         self.points = None
         self.rectangles = None
         self.lines = None
-        self.strings = None
         self.inputs = None
         self.canvas = None
         self.drawingMaxWidth = None
@@ -86,8 +89,8 @@ class BrainPanel(QWidget):
 
         formGrid.addWidget(self.canvas, 0, 0, 1, lastIndex + 1)
 
-        self.resize(self.drawingMaxWidth + 100, self.drawingMaxHeight + 100)
-        self.parentWidget().resize(self.drawingMaxWidth + 100, self.drawingMaxHeight + 100)
+        self.resize(self.canvasTool.getTotalWidth(self.brain), self.canvasTool.getTotalHeight(self.brain))
+        self.parentWidget().resize(self.canvasTool.getTotalWidth(self.brain), self.canvasTool.getTotalHeight(self.brain))
 
         self.setLayout(formGrid)
 
@@ -102,7 +105,11 @@ class BrainPanel(QWidget):
     def update(self):
         self.updateDynamicDrawables()
 
-        self.setWindowTitle("OverallF: " + str(round(self.brain.overallFitness, 5)) + " LastF: " + str(round(self.brain.fitness, 5)) + " Cycle:" + str(self.brain.learnCycle))
+        self.setWindowTitle("OverallF: "
+                            + str(round(self.brain.overallFitness, 5))
+                            + " LastF: "
+                            + str(round(self.brain.fitness, 5))
+                            + " Cycle:" + str(self.brain.learnCycle))
 
         self.canvas.reset()
         self.canvas.addRectanges(self.rectangles)
@@ -146,7 +153,7 @@ class BrainPanel(QWidget):
 
         for (layerNr, layer) in enumerate(self.brain.layers):
 
-            if (layerNr >= len(self.neuronValueStrings)):
+            if layerNr >= len(self.neuronValueStrings):
                 self.neuronValueStrings.insert(layerNr, list())
 
             for (neuronNr, neuron) in enumerate(layer.neurons):
@@ -166,73 +173,27 @@ class BrainPanel(QWidget):
                 if layerNr != 0:
                     self.functionNames.append(Label.Label(functionNamePoint, str(neuron.activeActivationName)))
 
-
-
     def createRectangles(self):
-        # Editable vars
-        layerXOffset = 10
-
-        layerMargin = 60
-        layerWidth = 60
-
-        neuronMargin = 5
-
-        # Do not edit below this point
-        layerHeightSteps = layerWidth - neuronMargin
-        neuronXOffset = 5 + layerXOffset
-
-        neuronWidth = layerWidth - (2 * neuronMargin)
-        neuronHeight = neuronWidth
-
-        # Hidden layers are the biggest layers. Use these to calculate a offset for the input en output layer.
-        # So that it will align nicely
-        maxNeuronsInLayer = self.brain.hiddenSize
-
-        self.drawingMaxWidth = 0
-        self.drawingMaxHeight = 0
-
         for (layerNr, layer) in enumerate(self.brain.layers):
 
-            deltaNeuronsInLayer = maxNeuronsInLayer - len(layer.neurons)
-            yOffset = (layerHeightSteps * deltaNeuronsInLayer) / 2
+            topLeftLayerPoint = self.canvasTool.getLayerTopLeft(layer)
+            bottomRightLayerPoint = self.canvasTool.getLayerBottomRight(layer)
 
-            layerPosition = layerNr
+            rect = Rectangle.Rectangle(topLeftLayerPoint, bottomRightLayerPoint)
 
-            xR = layerXOffset + (layerPosition * (layerWidth + layerMargin))
-            yR = 10 + yOffset
-            layerHeight = (len(layer.neurons) * layerHeightSteps) + neuronMargin
-
-            rect = Rectangle.Rectangle(
-                xR,
-                yR,
-                layerWidth,
-                layerHeight
-            )
-
-            if (self.drawingMaxWidth < (xR + layerWidth)):
-                self.drawingMaxWidth = (xR + layerWidth)
-
-            if (self.drawingMaxHeight < (yR + layerHeight)):
-                self.drawingMaxHeight = (yR + layerHeight)
-
-            if (layerNr >= len(self.points)):
+            if layerNr >= len(self.points):
                 self.points.insert(layerNr, list())
 
             self.rectangles.append(rect)
 
             for (neuronNr, neuron) in enumerate(layer.neurons):
-                xN = (layerPosition * (layerWidth + layerMargin)) + neuronXOffset
-                yN = 15 + (neuronNr * layerHeightSteps) + yOffset
+                centerPoint = self.canvasTool.getNeuronCenter(neuron)
+                topLeftPoint = self.canvasTool.getNeuronTopLeft(neuron)
+                bottomRightPoint = self.canvasTool.getNeuronBotomRight(neuron)
 
-                centerPoint = Point.Point(xN + (neuronWidth / 2), yN + (neuronHeight / 2))
                 self.points[layerNr].insert(neuronNr, centerPoint)
 
-                rect = Rectangle.Rectangle(
-                    xN,
-                    yN,
-                    neuronWidth,
-                    neuronHeight
-                )
+                rect = Rectangle.Rectangle(topLeftPoint, bottomRightPoint)
 
                 # Color bias neurons orange
                 if neuron.type == neuron.TYPE_BIAS:
@@ -243,22 +204,19 @@ class BrainPanel(QWidget):
     def createLines(self):
         for (layerNr, layer) in enumerate(self.brain.layers):
 
-            if (layerNr >= len(self.lines)):
+            if layerNr >= len(self.lines):
                 self.lines.insert(layerNr, list())
 
             for (neuronNr, neuron) in enumerate(layer.neurons):
 
-                if (neuronNr >= len(self.lines[layerNr])):
+                if neuronNr >= len(self.lines[layerNr]):
                     self.lines[layerNr].insert(neuronNr, list())
 
                 for (synapseNr, synapse) in enumerate(neuron.synapses):
-                    xA = layerNr - 1
-                    yA = synapseNr
+                    startPoint = self.canvasTool.getNeuronRightAnchor(synapse.leftNeuron)
+                    endPoint = self.canvasTool.getNeuronLeftAnchor(synapse.rightNeuron)
 
-                    xB = layerNr
-                    yB = neuronNr
-
-                    line = Line.Line(self.points[xA][yA], self.points[xB][yB])
+                    line = Line.Line(startPoint, endPoint)
                     line.setWeight(synapse.weight)
 
                     self.lines[layerNr][neuronNr].insert(synapseNr, line)
