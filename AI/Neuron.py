@@ -12,6 +12,7 @@ class Neuron:
     ACTIVATION_SIGMOID = "sigmoid"
     ACTIVATION_TANH = "tanh"
     ACTIVATION_RELU = "relu"
+    ACTIVATION_THRESHOLD = "threshold"
 
     # Name for debug identification. This will be some sort of X-Y coordinate in the network
     name = ''
@@ -62,6 +63,7 @@ class Neuron:
             self.ACTIVATION_SIGMOID: self.__sigmoid,
             self.ACTIVATION_TANH: self.__tanh,
             self.ACTIVATION_RELU: self.__relu,
+            self.ACTIVATION_THRESHOLD: self.__threshold,
         }
 
         self.activeActivation = self.activations[self.ACTIVATION_SIGMOID]
@@ -101,3 +103,7 @@ class Neuron:
     def __none(self, value):
         # Dont use value. This activation function doesnt do anything.
         return self.value
+
+    # return 1 if value > 0 else 0
+    def __threshold(self, value):
+        return 1 if value > 0 else 0

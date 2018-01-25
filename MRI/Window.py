@@ -182,7 +182,6 @@ class Window(QMainWindow):
             return
 
         for (index) in range(0, numberOfIterations):
-            # cProfile.runctx('self.activePopulation.learn([0, 0], [0])',globals(),locals())
             self.activePopulation.learn(inputData, expectedOutputData)
             self.timedUpdate()
             # Prevent main application from freezing!

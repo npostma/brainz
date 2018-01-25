@@ -125,6 +125,7 @@ class PopulationPanel(QWidget):
         self.activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_SIGMOID)
         self.activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_RELU)
         self.activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_TANH)
+        self.activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_THRESHOLD)
         #activationFunctionSelect.activated[str].connect(self.activateActivationFunction)
         activationFunctionFormGrid.addRow(QLabel("AFunction:"), self.activationFunctionSelect)
 
