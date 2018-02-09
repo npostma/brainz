@@ -1,8 +1,6 @@
 from AI import Neuron
 
 from . import Layer
-import hashlib
-from functools import reduce
 
 
 class Brain:
@@ -143,10 +141,6 @@ class Brain:
 
     def compute(self, inputData):
 
-        if len(inputData) != self.layers[0].size():
-            raise ValueError('Size of input data:' + str(len(inputData)) + ' does not match size of input layer:' + str(
-                self.layers[0].size()))
-
         # Give input to the sensors
         for (neuronNr, inputNeuron) in enumerate(self.layers[0].neurons):
             if inputNeuron.type == inputNeuron.TYPE_BIAS:
@@ -165,30 +159,28 @@ class Brain:
                     # Don't calculate the value of a bias neuron. It has no incoming synapse(s)
                     continue
 
-                values = list()
+                value = 0;
                 for (neuronNrPrevLayer, neuronPrevLayer) in enumerate(previousLayer.neurons):
                     # The value of each previous neuron multiplied with the weight in the current layer
                     # This value will be stored in the current neuron.
                     # This way the value will traverse through our network
-                    values.append(neuronPrevLayer.value * neuron.synapses[neuronNrPrevLayer].weight)
+                    value += neuronPrevLayer.value * neuron.synapses[neuronNrPrevLayer].weight
 
                 # SUM the total value in the collection
-                value = reduce(lambda a, b: a + b, values)
                 neuron.activate(value)
 
     def learn(self, inputData, outputData):
         self.learnCycle += 1
 
         self.compute(inputData)
+
         return self.__learn(inputData, outputData)
 
     def __learn(self, inputData, outputData):
         # Store all cases. This could get big. Time will tell
         # TODO: Check memory usage and performance after a lot of learning
         dataString = "-".join(map(str, inputData))
-        dataString = dataString.encode()
-        hashObject = hashlib.sha1(dataString)
-        self.studyCases[hashObject.hexdigest()] = {'input': inputData, 'expectedOutput': outputData}
+        self.studyCases[dataString] = {'input': inputData, 'expectedOutput': outputData}
 
         # Calculate the gradient for the output layer
         for (neuronNr, neuron) in enumerate(self.layers[-1].neurons):
@@ -207,16 +199,13 @@ class Brain:
 
             for (neuronNr, neuron) in enumerate(self.layers[layerNr].neurons):
 
-                deltas = list()
+                error = 0
                 for (nextNeuronNr, nextNeuron) in enumerate(nextLayer.neurons):
                     if nextNeuron.type == nextNeuron.TYPE_BIAS:
                         # A bias neuron has no incoming synapse. So this can be skipped
                         continue
 
-                    delta = nextNeuron.delta * nextNeuron.synapses[neuronNr].weight
-                    deltas.append(delta)
-
-                error = reduce(lambda a, b: a + b, deltas)
+                    error += nextNeuron.delta * nextNeuron.synapses[neuronNr].weight
 
                 neuron.delta = neuron.value * (1 - neuron.value) * error
 
@@ -246,15 +235,12 @@ class Brain:
     # 4 - calculate some super value that really tells how good this brain has become
     def measureOverallFitness(self):
 
-        fitnessResults = list()
-
+        self.overallFitness = 0
         for (caseNr, case) in self.studyCases.items():
             self.compute(case['input'])
-            localFitness = self.measureFitness(case['expectedOutput'])
-            fitnessResults.append(localFitness)
+            self.overallFitness += self.measureFitness(case['expectedOutput'])
 
-        self.overallFitness = reduce(lambda a, b: a + b, fitnessResults)
-        self.overallFitness = self.overallFitness / len(fitnessResults)
+        self.overallFitness = self.overallFitness / len(self.studyCases.items())
 
     # Determine the fitness for now by hand. So I give it a expected output.
     # This wil NOT be used for learning but to determine how good the brain has become

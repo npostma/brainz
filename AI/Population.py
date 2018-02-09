@@ -59,6 +59,11 @@ class Population:
         return population
 
     def learn(self, inputData, outputData):
+
+        if len(inputData) != self.inputSize:
+            raise ValueError('Size of input data:' + str(len(inputData)) + ' does not match size of input layer:' + str(
+                self.layers[0].size()))
+
         # Let the whole population learn the same data
         start = time.time()
 
@@ -75,7 +80,6 @@ class Population:
 
         for (brainNr, brain) in enumerate(self.brains):
             brain.learn(inputData, outputData)
-            brain.measureOverallFitness()
 
         end = time.time()
         delta = end - start;
@@ -104,6 +108,12 @@ class Population:
 
     # Every couple will create 2 children with there neighbour brain on a given moment.
     def breed(self):
+
+        # Calculate overall fitness before we start to breed.
+        # Moved from learning to speed up the learning proces
+        for (brainNr, brain) in enumerate(self.brains):
+            brain.measureOverallFitness()
+
         childGenomes = list()
         childPopulation = list()
 
