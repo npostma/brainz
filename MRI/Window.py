@@ -81,7 +81,7 @@ class Window(QMainWindow):
         panel.setupLayout()
 
     def setupLayout(self):
-        if self.initialized == True:
+        if self.initialized:
             raise Exception("Already started")
 
         self.leftDock = QDockWidget("Population control", self)
@@ -166,8 +166,10 @@ class Window(QMainWindow):
 
         self.deltaTime = self.endTime - self.startTime
 
-        # Passed time less then 0.1s?
-        if self.deltaTime < 0.1:
+        # Passed time less then 0.3s.
+        # Faster refreshing slows it all down.
+        # Less refreshing does not improve speed
+        if self.deltaTime < 0.3:
             return
 
         # restart the mesuring of time
@@ -257,3 +259,4 @@ class Window(QMainWindow):
         for (i, panelGroupList) in enumerate(self.panels):
             for (i, panelData) in enumerate(panelGroupList):
                 panelData['panel'].update()
+                continue

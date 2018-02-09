@@ -18,7 +18,7 @@ ob_end_flush();
 
 echo "<h2>TCP socket Connection</h2><br/>";
 
-$port = 1337;
+$port = 9010;
 
 /* Get the IP address for the target host. */
 $address = '10.102.10.69';

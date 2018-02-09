@@ -3,10 +3,6 @@ from PyQt5.QtCore import *
 
 import json
 
-HOST = '0.0.0.0'
-PORT = 1337
-SIZEOF_UINT32 = 4
-
 
 # Socket server as a worker thread
 class SocketClientProcessor(QThread):

@@ -189,7 +189,7 @@ class BrainPanel(QWidget):
             for (neuronNr, neuron) in enumerate(layer.neurons):
                 centerPoint = self.canvasTool.getNeuronCenter(neuron)
                 topLeftPoint = self.canvasTool.getNeuronTopLeft(neuron)
-                bottomRightPoint = self.canvasTool.getNeuronBotomRight(neuron)
+                bottomRightPoint = self.canvasTool.getNeuronBottomRight(neuron)
 
                 self.points[layerNr].insert(neuronNr, centerPoint)
 

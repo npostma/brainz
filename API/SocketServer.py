@@ -4,8 +4,7 @@ from PyQt5.QtCore import *
 from API import SocketClientProcessor
 
 HOST = '0.0.0.0'
-PORT = 1337
-SIZEOF_UINT32 = 4
+PORT = 9010
 
 
 # Socket server as a worker thread

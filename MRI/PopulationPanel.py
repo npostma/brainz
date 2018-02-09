@@ -210,7 +210,7 @@ class PopulationPanel(QWidget):
         for (i, inputField) in enumerate(self.learnInputs):
             trainingSet = inputField.text()
 
-            if (';' in trainingSet):
+            if ';' in trainingSet:
                 trainingSet = trainingSet.split(';')
 
                 for (j, value) in enumerate(trainingSet):
@@ -248,12 +248,12 @@ class PopulationPanel(QWidget):
         for (i, outputField) in enumerate(self.learnOutputs):
             outputSet = outputField.text()
 
-            if (';' in outputSet):
+            if ';' in outputSet:
                 outputSet = outputSet.split(';')
 
                 for (j, value) in enumerate(outputSet[:-1]):
 
-                    if (j >= len(expectedOutput)):
+                    if j >= len(expectedOutput):
                         expectedOutput.insert(j, list())
 
                     expectedOutput[j].append(float(value))

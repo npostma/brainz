@@ -1,5 +1,6 @@
 import math
 import random
+import time
 
 from AI import Cell, Brain
 from MRI import CLI
@@ -19,6 +20,24 @@ class Population:
 
     # Collection of brains
     brains = list()
+
+    # Number of calls to the learn function
+    learnIterationCounter = 0
+
+    # Overall average of the learning function
+    learnAverageTime = 0
+
+    # Number of calls to the learn function when delay is measured
+    learnIterationDelayCounter = 0
+
+    # Overlal average of recalling the learn function when learning in batches
+    learnDelayTime = 0
+
+    # Time when the learn function is entered
+    learnTimeStart = 0
+
+    # Time when te learn function is ended.
+    learnTimeEnd = 0
 
     def __init__(self, inputSize=6, outputSize=2, populationSize=2):
         self.brains = list()
@@ -41,9 +60,37 @@ class Population:
 
     def learn(self, inputData, outputData):
         # Let the whole population learn the same data
+        start = time.time()
+
+        self.learnTimeStart = time.time()
+
+        if self.learnTimeStart != 0 and self.learnTimeEnd != 0:
+            delayDelta = self.learnTimeStart - self.learnTimeEnd
+
+            # Pauzes between batch learning calls do not count for 'delay'.
+            # This is user interaction that takes time and need to be filtered
+            if delayDelta < 3:
+                self.learnIterationDelayCounter += 1;
+                self.learnDelayTime = ((self.learnDelayTime * self.learnIterationDelayCounter) + delayDelta) / self.learnIterationDelayCounter
+
         for (brainNr, brain) in enumerate(self.brains):
             brain.learn(inputData, outputData)
             brain.measureOverallFitness()
+
+        end = time.time()
+        delta = end - start;
+
+        if self.learnAverageTime == 0:
+            self.learnAverageTime = delta
+        else:
+            self.learnAverageTime = ((self.learnAverageTime * self.learnIterationCounter) + delta)
+
+        self.learnIterationCounter += 1
+
+        self.learnAverageTime = (self.learnAverageTime / self.learnIterationCounter)
+        self.learnTimeEnd = time.time()
+
+        print(str(self.learnAverageTime) + '\t\t' + str(self.learnDelayTime))
 
     def compute(self, inputData):
         # Let the whole population compute the same data
