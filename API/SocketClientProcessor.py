@@ -16,13 +16,25 @@ class SocketClientProcessor(QThread):
         self.connection = connection
         self.address = address
 
+    def sendComputedResult(self, usedInputData, computedOutputData):
+        print('Sending response')
+        self.connection.sendall('DANK\0'.encode());
+        return
+
     def run(self):
         incomingBuffer = ''
 
         while True:
 
             # For now accepting max message size of 2048 (Individual message!)
-            dataStringRaw = self.connection.recv(2048)
+
+            try:
+                dataStringRaw = self.connection.recv(2048)
+            except ConnectionResetError as err:
+                # Client hung up ..... (not in a nice way) stop thread
+                print("Houston we've lost a client.")
+                return
+
             dataString = dataStringRaw.decode()
 
             if not dataString:
@@ -31,7 +43,7 @@ class SocketClientProcessor(QThread):
             print('SocketServer: Input received.')
 
             incomingBuffer = incomingBuffer + dataString
-            strings = incomingBuffer.split('\0')
+            strings = incomingBuffer.split('\n')
             for message in strings[:-1]:
                 try:
                     data = json.loads(message)
@@ -46,5 +58,5 @@ class SocketClientProcessor(QThread):
 
             incomingBuffer = strings[-1]
 
-        print('SocketServer: closing connection on this side.\n')
-        self.connection.close()
+        # Don't close connection. Client closed it in a graceful way
+        return

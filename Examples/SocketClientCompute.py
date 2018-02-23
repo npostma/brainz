@@ -37,13 +37,43 @@ squareFeetGround = normalize(inputData[2], 200, 25000)
 cubicFeetContent = normalize(inputData[3], 200, 1000)
 gardenFacingSouth = normalize(inputData[4], 0, 1)
 
-
+print('Sending data')
 # Slaapkamers, Afstand van centrum, Perceel oppervlakte, Inhoud, Tuin op zuinden, Groen
 socket.sendall(
     str("{\"command\": \"compute\", \"input\": [" + str(numBedRooms) + ", " + str(
         distanceFromCityCenter) + ", " + str(squareFeetGround) + ", " + str(cubicFeetContent) + ", " + str(
-        gardenFacingSouth) + "]}" + '\0').encode())
+        gardenFacingSouth) + "]}" + '\n').encode())
 
+print('Wait for return')
+incomingBuffer = ''
+running = True
+while running:
+
+    # For now accepting max message size of 2048 (Individual message!)
+    dataStringRaw = socket.recv(2048)
+    dataString = dataStringRaw.decode()
+
+    if not dataString:
+        break
+
+    incomingBuffer = incomingBuffer + dataString
+    strings = incomingBuffer.split('\n')
+    for message in strings[:-1]:
+        print(str(message))
+
+        if '\0' in message:
+            running = False
+
+    incomingBuffer = strings[-1]
+
+    # One response with a termination found.
+    if '\0' in incomingBuffer:
+        print(str(incomingBuffer))
+        running = False
+
+print('Shutting down')
 # Graceful shutdown
 socket.shutdown(1)
 socket.close()
+
+print('Exit')

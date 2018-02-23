@@ -5,7 +5,6 @@ import time
 from AI import Cell, Brain
 from MRI import CLI
 
-
 class Population:
     # Number of brains in this population
     populationSize = 12
@@ -98,8 +97,12 @@ class Population:
 
     def compute(self, inputData):
         # Let the whole population compute the same data
+        computedData = list()
         for (brainNr, brain) in enumerate(self.brains):
             brain.compute(inputData)
+            computedData.append(brain.getOutput())
+
+        return [inputData, computedData]
 
     def showOutput(self):
         for (brainNr, brain) in enumerate(self.brains):

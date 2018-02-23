@@ -38,6 +38,9 @@ class Window(QMainWindow):
 
     socketServer = None
 
+    # Signal when a computation is completed
+    computed = pyqtSignal(list, list, name='computed')
+
     def __init__(self, mainApplication):
         super(Window, self).__init__()
         self.panels = list()
@@ -65,13 +68,14 @@ class Window(QMainWindow):
 
         self.socketServer.start()
 
-    def learnFromExternalData(self, inputData, expectedOutput):
+    def learnFromExternalData(self, client, inputData, expectedOutput):
         self.activePopulation.learn(inputData, expectedOutput)
         self.timedUpdate()
 
-    def computeExternalData(self, inputData):
-        self.activePopulation.compute(inputData)
+    def computeExternalData(self, client, inputData):
+        computedData = self.activePopulation.compute(inputData)
         self.timedUpdate()
+        self.socketServer.sendComputedResult(client, computedData[0], computedData[1])
 
     def addPanel(self, panel, populationNr):
         if populationNr >= len(self.panels):

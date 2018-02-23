@@ -11,8 +11,8 @@ PORT = 9010
 class SocketServer(QThread):
     clientProcessors = []
 
-    learn = pyqtSignal(list, list)
-    compute = pyqtSignal(list)
+    learn = pyqtSignal(QThread, list, list)
+    compute = pyqtSignal(QThread, list)
 
     def __init__(self, parent=None):
         super(SocketServer, self).__init__(parent)
@@ -24,6 +24,10 @@ class SocketServer(QThread):
         self.socket.listen(5)
         while 1:
             self.acceptClientConnections()
+
+    def sendComputedResult(self, source, usedInputData, computedOutputData):
+        source.sendComputedResult(usedInputData, computedOutputData)
+        return
 
     def acceptClientConnections(self):
         print("SocketServer: Listing for a client connection.")
@@ -43,8 +47,8 @@ class SocketServer(QThread):
 
     # Pass through the signal from the client processor ... not sure if this is the right way
     def emitLearnSignal(self, a, b):
-        self.learn.emit(a, b)
+        self.learn.emit(self.sender(), a, b)
 
     # Pass through signal from the client processor ... not sure if this is the right way
     def emitComputeSignal(self, a):
-        self.compute.emit(a)
+        self.compute.emit(self.sender(), a)

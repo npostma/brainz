@@ -42,19 +42,19 @@ if ($result === false) {
 
 echo "Sending request ... ";
 for ($i = 0; $i < 1000; $i++) {
-	$in = "{\"command\": \"learn\", \"input\": [1,1], \"expectedOutput\": [0]}\0";
+	$in = "{\"command\": \"learn\", \"input\": [1,1], \"expectedOutput\": [0]}\n";
 	socket_write($socket, $in, strlen($in));
 	echo $in . "<br/>";
-	$in = "{\"command\": \"learn\", \"input\": [0,0], \"expectedOutput\": [0]}\0";
+	$in = "{\"command\": \"learn\", \"input\": [0,0], \"expectedOutput\": [0]}\n";
 	socket_write($socket, $in, strlen($in));
 	echo $in . "<br/>";
-	$in = "{\"command\": \"learn\", \"input\": [0,1], \"expectedOutput\": [1]}\0";
+	$in = "{\"command\": \"learn\", \"input\": [0,1], \"expectedOutput\": [1]}\n";
 	socket_write($socket, $in, strlen($in));
 	echo $in . "<br/>";
-	$in = "{\"command\": \"learn\", \"input\": [1,0], \"expectedOutput\": [1]}\0";
+	$in = "{\"command\": \"learn\", \"input\": [1,0], \"expectedOutput\": [1]}\n";
 	socket_write($socket, $in, strlen($in));
 	echo $in . "<br/>";
-	$in = "{\"command\": \"compute\", \"input\": [1,0], \"expectedOutput\": [1]}\0";
+	$in = "{\"command\": \"compute\", \"input\": [1,0], \"expectedOutput\": [1]}\n";
 	socket_write($socket, $in, strlen($in));
 	echo $in . "<br/>";
 

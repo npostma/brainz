@@ -22,7 +22,7 @@ def deNormalize(normalized, maxValue, minValue):
     return deNormalized;
 
 
-for (i) in range(0, 1):
+for (i) in range(0, 500):
 
     cases = [
         [[2, 10, 250, 300, 1], [120000]],
@@ -67,7 +67,7 @@ for (i) in range(0, 1):
         socket.sendall(
             str("{\"command\": \"learn\", \"input\": [" + str(numBedRooms) + ", " + str(
                 distanceFromCityCenter) + ", " + str(squareFeetGround) + ", " + str(cubicFeetContent) + ", " + str(
-                gardenFacingSouth) + "], \"expectedOutput\": [" + str(priceOfHouse) + "]}" + '\0').encode())
+                gardenFacingSouth) + "], \"expectedOutput\": [" + str(priceOfHouse) + "]}" + '\n').encode())
 
 # Graceful shutdown
 socket.shutdown(1)
