@@ -12,7 +12,7 @@ class SocketServer(QThread):
     clientProcessors = []
 
     learn = pyqtSignal(list, list)
-    compute = pyqtSignal(list, list)
+    compute = pyqtSignal(list)
 
     def __init__(self, parent=None):
         super(SocketServer, self).__init__(parent)
@@ -46,5 +46,5 @@ class SocketServer(QThread):
         self.learn.emit(a, b)
 
     # Pass through signal from the client processor ... not sure if this is the right way
-    def emitComputeSignal(self, a, b):
-        self.compute.emit(a, b)
+    def emitComputeSignal(self, a):
+        self.compute.emit(a)

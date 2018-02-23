@@ -8,7 +8,7 @@ class SocketClientProcessor(QThread):
 
     # Register signals that the clientProcessor can emit
     learn = pyqtSignal(list, list, name='learn')
-    compute = pyqtSignal(list, list, name='compute')
+    compute = pyqtSignal(list, name='compute')
 
     def __init__(self, connection, address, parent=None):
         super(SocketClientProcessor, self).__init__(parent)
@@ -39,10 +39,10 @@ class SocketClientProcessor(QThread):
                     if data['command'] == 'learn':
                         self.learn.emit(data['input'], data['expectedOutput'])
                     elif data['command'] == 'compute':
-                        self.compute.emit(data['input'], data['expectedOutput'])
+                        self.compute.emit(data['input'])
 
                 except ValueError as err:
-                    print(('Data received (' + message + ') was in incorrect format.'))
+                    print('Data received (' + message + ') was in incorrect format.')
 
             incomingBuffer = strings[-1]
 

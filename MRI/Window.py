@@ -69,7 +69,7 @@ class Window(QMainWindow):
         self.activePopulation.learn(inputData, expectedOutput)
         self.timedUpdate()
 
-    def computeExternalData(self, inputData, expectedOutput):
+    def computeExternalData(self, inputData):
         self.activePopulation.compute(inputData)
         self.timedUpdate()
 
