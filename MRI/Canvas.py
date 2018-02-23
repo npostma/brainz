@@ -30,8 +30,9 @@ class Canvas(QWidget):
         self.strings = list()
         self.heightMap = {}
 
-    def resetLines(self):
+    def reset(self):
         self.lines = list()
+        self.strings = list()
 
     def registerY(self, x):
         if x in self.heightMap:

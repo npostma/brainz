@@ -193,11 +193,6 @@ class Window(QMainWindow):
             # Prevent main application from freezing!
             self.mainApplication.processEvents()
 
-        # One time update at the end. If it all goes to fast you want to see the change.
-        # Print status report for debug
-        print('Num brains in active population ' + str(len(self.activePopulation.brains)))
-
-
         self.update()
 
     def breedPopulation(self):

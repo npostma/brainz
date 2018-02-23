@@ -118,7 +118,6 @@ class PopulationPanel(QWidget):
         self.layerTypeSelect = QComboBox()
         self.layerTypeSelect.addItem(Layer.Layer.TYPE_HIDDEN)
         self.layerTypeSelect.addItem(Layer.Layer.TYPE_OUTPUT)
-        # activationFunctionSelect.activated[str].connect(self.activateActivationFunction)
         activationFunctionFormGrid.addRow(QLabel("LType:"), self.layerTypeSelect)
 
         self.activationFunctionSelect = QComboBox()
@@ -126,7 +125,6 @@ class PopulationPanel(QWidget):
         self.activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_RELU)
         self.activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_TANH)
         self.activationFunctionSelect.addItem(Neuron.Neuron.ACTIVATION_THRESHOLD)
-        #activationFunctionSelect.activated[str].connect(self.activateActivationFunction)
         activationFunctionFormGrid.addRow(QLabel("AFunction:"), self.activationFunctionSelect)
 
         verticalStack.addLayout(activationFunctionFormGrid)
@@ -217,7 +215,7 @@ class PopulationPanel(QWidget):
                     if i == 0:
                         numInSet += 1
                     elif numInSet != len(trainingSet):
-                        self.mainWindow.windowStatusBar.showMessage('Input of dataset is not correct, sizes do not match'
+                        self.mainWindow.windowStatusBar.showMessage('Input of data set is not correct, sizes do not match'
                                                                     , 5000)
                         return
 
@@ -272,7 +270,6 @@ class PopulationPanel(QWidget):
             except IndexError:
                 self.mainWindow.windowStatusBar.showMessage('Output of data set is not correct, Not matching input',
                                                             5000)
-
 
     def destroyClicked(self):
         self.mainWindow.destroyPopulation(self.populationSelection.currentIndex())

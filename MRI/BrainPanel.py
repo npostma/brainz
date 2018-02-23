@@ -41,11 +41,11 @@ class BrainPanel(QWidget):
         self.inputs = list()
         self.functionNames = list()
 
-        # Static drawables
+        # Static drawable objects
         self.rectangles = list()
         self.points = list()
 
-        # Dynamic drawables
+        # Dynamic drawable objects
         self.lines = list()
         self.neuronValueStrings = list()
         self.brainStrings = list()
@@ -96,8 +96,8 @@ class BrainPanel(QWidget):
 
     def SubmitClicked(self):
         data = list()
-        for (i, input) in enumerate(self.inputs):
-            data.append(float(input.text()))
+        for (i, inputField) in enumerate(self.inputs):
+            data.append(float(inputField.text()))
 
         self.brain.compute(data)
         self.update()
@@ -107,7 +107,8 @@ class BrainPanel(QWidget):
 
         self.setWindowTitle("Cycle:" + str(self.brain.learnCycle))
 
-        self.canvas.resetLines()
+        self.canvas.reset()
+
         self.canvas.addStrings(self.getStrings())
         self.canvas.addLines(self.getLines())
 
@@ -137,7 +138,7 @@ class BrainPanel(QWidget):
         return strings
 
     def updateDynamicDrawables(self):
-        #self.updateStrings()
+        self.updateStrings()
         self.updateLines()
 
     def createStaticDrawables(self):
@@ -163,10 +164,7 @@ class BrainPanel(QWidget):
             for (neuronNr, neuron) in enumerate(layer.neurons):
                 centerPoint = self.points[layerNr][neuronNr] - Point.Point(20, 12)
 
-                if neuronNr >= len(self.neuronValueStrings[layerNr]):
-                    self.neuronValueStrings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.value)))
-                else:
-                    self.neuronValueStrings[layerNr][neuronNr] = Label.Label(centerPoint, str(neuron.value))
+                self.neuronValueStrings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.value)))
 
                 functionNamePoint = centerPoint + Point.Point(0, 30)
 

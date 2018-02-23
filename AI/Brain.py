@@ -19,7 +19,7 @@ class Brain:
     # Number of layers
     numLayers = 0
 
-    # Some learningrate Todo: no clue of this is a good value for my code
+    # Some learning rate Todo: no clue of this is a good value for my code
     learningRate = 0.3
 
     # Todo: Some value for computing. Find out what its good for
@@ -55,7 +55,7 @@ class Brain:
         self.biasValue = 1
         self.studyCases = {}
 
-        # Rule of thumb to determine wich size the neural network sould have
+        # Rule of thumb to determine which size the neural network sould have
         # https://chatbotslife.com/machine-learning-for-dummies-part-2-270165fc1700
         # Adding one extra neuron to the layer based on the rule of thumb gives better/accurate results.
         if self.inputSize > self.outputSize:
