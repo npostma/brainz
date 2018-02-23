@@ -41,7 +41,7 @@ class Brain:
     # Keep track of all the leaning data. To calculate a overall fitness we examine all the given expected outputs
     studyCases = {}
 
-    # Number of biased nuerons per layer
+    # Number of biased neurons per layer
     biasSize = 0
 
     def __init__(self, inputSize=6, outputSize=2):

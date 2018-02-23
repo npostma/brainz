@@ -21,7 +21,11 @@ class Canvas(QWidget):
     def __init__(self):
         super(Canvas, self).__init__()
 
-        self.resetAll()
+        self.rectangles = list()
+        self.points = list()
+        self.lines = list()
+        self.strings = list()
+        self.heightMap = {}
 
     def resetAll(self):
         self.rectangles = list()

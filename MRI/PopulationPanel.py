@@ -57,7 +57,7 @@ class PopulationPanel(QWidget):
             learnFormGrid.addRow(QLabel("Output " + str(i) + ":"), decimalInput)
 
         self.iterationsTextbox = QLineEdit()
-        self.iterationsTextbox.setValidator(QIntValidator(0, 9999))
+        self.iterationsTextbox.setValidator(QIntValidator(0, 99999))
         self.iterationsTextbox.setText("500")
         learnFormGrid.addRow(QLabel("Num. of iterations:"), self.iterationsTextbox)
 

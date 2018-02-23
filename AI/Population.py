@@ -94,7 +94,7 @@ class Population:
         self.learnAverageTime = (self.learnAverageTime / self.learnIterationCounter)
         self.learnTimeEnd = time.time()
 
-        print(str(self.learnAverageTime) + '\t\t' + str(self.learnDelayTime))
+        #print(str(self.learnAverageTime) + '\t\t' + str(self.learnDelayTime))
 
     def compute(self, inputData):
         # Let the whole population compute the same data
