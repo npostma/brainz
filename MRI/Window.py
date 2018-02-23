@@ -36,12 +36,16 @@ class Window(QMainWindow):
     endTime = 0
     deltaTime = 0
 
+    socketServer = None
+
     def __init__(self, mainApplication):
         super(Window, self).__init__()
         self.panels = list()
         self.initialized = False
-        self.activePopulation = None
+        self.activePopulation = None  # type: AI.population
         self.mainApplication = mainApplication
+
+        self.socketServer = None
 
         # Timed loop variables
         self.startTime = 0
@@ -54,19 +58,19 @@ class Window(QMainWindow):
         self.windowStatusBar = None
 
     def startListening(self):
-        self.SocketServer = SocketServer.SocketServer()
+        self.socketServer = SocketServer.SocketServer()
 
-        self.SocketServer.learn.connect(self.learnFromExternalData)
-        self.SocketServer.compute.connect(self.computeExternalData)
+        self.socketServer.learn.connect(self.learnFromExternalData)
+        self.socketServer.compute.connect(self.computeExternalData)
 
-        self.SocketServer.start()
+        self.socketServer.start()
 
-    def learnFromExternalData(self, input, expectedOutput):
-        self.activePopulation.learn(input, expectedOutput)
+    def learnFromExternalData(self, inputData, expectedOutput):
+        self.activePopulation.learn(inputData, expectedOutput)
         self.timedUpdate()
 
-    def computeExternalData(self, input, expectedOutput):
-        self.activePopulation.compute(input)
+    def computeExternalData(self, inputData, expectedOutput):
+        self.activePopulation.compute(inputData)
         self.timedUpdate()
 
     def addPanel(self, panel, populationNr):
@@ -190,6 +194,10 @@ class Window(QMainWindow):
             self.mainApplication.processEvents()
 
         # One time update at the end. If it all goes to fast you want to see the change.
+        # Print status report for debug
+        print('Num brains in active population ' + str(len(self.activePopulation.brains)))
+
+
         self.update()
 
     def breedPopulation(self):

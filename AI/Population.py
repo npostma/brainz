@@ -30,7 +30,7 @@ class Population:
     # Number of calls to the learn function when delay is measured
     learnIterationDelayCounter = 0
 
-    # Overlal average of recalling the learn function when learning in batches
+    # Overal average of recalling the learn function when learning in batches
     learnDelayTime = 0
 
     # Time when the learn function is entered

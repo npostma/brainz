@@ -178,6 +178,7 @@ class Brain:
 
     def __learn(self, inputData, outputData):
         # Store all cases. This could get big. Time will tell
+
         # TODO: Check memory usage and performance after a lot of learning
         dataString = "-".join(map(str, inputData))
         self.studyCases[dataString] = {'input': inputData, 'expectedOutput': outputData}

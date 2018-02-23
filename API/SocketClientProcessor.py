@@ -1,4 +1,3 @@
-import socket
 from PyQt5.QtCore import *
 
 import json
@@ -18,7 +17,7 @@ class SocketClientProcessor(QThread):
         self.address = address
 
     def run(self):
-        recvBuffer = ""
+        incomingBuffer = ''
 
         while True:
 
@@ -29,10 +28,10 @@ class SocketClientProcessor(QThread):
             if not dataString:
                 break
 
-            print("SocketServer: Input received.")
+            print('SocketServer: Input received.')
 
-            recvBuffer = recvBuffer + dataString
-            strings = recvBuffer.split('\0')
+            incomingBuffer = incomingBuffer + dataString
+            strings = incomingBuffer.split('\0')
             for message in strings[:-1]:
                 try:
                     data = json.loads(message)
@@ -42,14 +41,10 @@ class SocketClientProcessor(QThread):
                     elif data['command'] == 'compute':
                         self.compute.emit(data['input'], data['expectedOutput'])
 
-                    # self.emit(SIGNAL(data['command']), data['input'], data['expectedOutput'])
                 except ValueError as err:
-                    print(("Data received (" + message + ") was in incorrect format."))
+                    print(('Data received (' + message + ') was in incorrect format.'))
 
-                # print("Thanks")
-                # self.connection.sendall("Thanks")
+            incomingBuffer = strings[-1]
 
-            recvBuffer = strings[-1]
-
-        print("SocketServer: closing connection on this side.\n")
+        print('SocketServer: closing connection on this side.\n')
         self.connection.close()

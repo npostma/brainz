@@ -221,7 +221,7 @@ class PopulationPanel(QWidget):
                                                                     , 5000)
                         return
 
-                    if (j >= len(inputData)):
+                    if j >= len(inputData):
                         inputData.insert(j, list())
 
                     if not value:
@@ -259,21 +259,20 @@ class PopulationPanel(QWidget):
                     expectedOutput[j].append(float(value))
             else:
                 if not outputSet:
-                    self.mainWindow.windowStatusBar.showMessage('Output data of dataset is not correct', 5000)
+                    self.mainWindow.windowStatusBar.showMessage('Output data of data set is not correct', 5000)
                     return
                 expectedOutput[0].append(float(outputSet))
 
         numberOfIterations = int(self.iterationsTextbox.text())
 
         # Check if inputs are matching up
-        numInSet
-
         for (setNr, trainingSet) in enumerate(inputData):
             try:
                 self.mainWindow.teachPopulation(trainingSet, expectedOutput[setNr], numberOfIterations)
             except IndexError:
-                self.mainWindow.windowStatusBar.showMessage('Output of dataset is not correct, Not matching input',
+                self.mainWindow.windowStatusBar.showMessage('Output of data set is not correct, Not matching input',
                                                             5000)
+
 
     def destroyClicked(self):
         self.mainWindow.destroyPopulation(self.populationSelection.currentIndex())

@@ -37,6 +37,9 @@ class Label():
     def getPoint(self):
         return self.point
 
+    def setText(self, text):
+        self.data = text
+
     def getX(self):
         x = self.point.x()
         return x

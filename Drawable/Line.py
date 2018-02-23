@@ -37,13 +37,13 @@ class Line(QLine):
         a = abs(weight) * 30
         c = abs(weight) * 50
 
-        if (a >= 200):
+        if a >= 200:
             a = 200
 
-        if (c >= 255):
+        if c >= 255:
             c = 255
 
-        if(weight < 0):
+        if weight < 0:
             self.g = 0
             self.r = c
         else:
@@ -52,7 +52,6 @@ class Line(QLine):
 
         self.a = 255 - a
         self.width = (abs(weight) * 2) + 1
-
 
     def getPen(self):
         pen = QPen(self.getColor())

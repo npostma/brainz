@@ -105,16 +105,12 @@ class BrainPanel(QWidget):
     def update(self):
         self.updateDynamicDrawables()
 
-        self.setWindowTitle("OverallF: "
-                            + str(round(self.brain.overallFitness, 5))
-                            + " LastF: "
-                            + str(round(self.brain.fitness, 5))
-                            + " Cycle:" + str(self.brain.learnCycle))
+        self.setWindowTitle("Cycle:" + str(self.brain.learnCycle))
 
-        self.canvas.reset()
-        self.canvas.addRectanges(self.rectangles)
-        self.canvas.addLines(self.getLines())
+        self.canvas.resetLines()
         self.canvas.addStrings(self.getStrings())
+        self.canvas.addLines(self.getLines())
+
         self.canvas.repaint()
 
     def getRectangles(self):
@@ -141,12 +137,20 @@ class BrainPanel(QWidget):
         return strings
 
     def updateDynamicDrawables(self):
-        self.createStrings()
+        #self.updateStrings()
         self.updateLines()
 
     def createStaticDrawables(self):
         self.createRectangles()
         self.createLines()
+        self.createStrings()
+
+        self.canvas.addRectanges(self.rectangles)
+
+    def updateStrings(self):
+        for (layerNr, layer) in enumerate(self.brain.layers):
+            for (neuronNr, neuron) in enumerate(layer.neurons):
+                self.neuronValueStrings[layerNr][neuronNr].setText(str(neuron.value))
 
     def createStrings(self):
         self.functionNames = list()
@@ -159,9 +163,6 @@ class BrainPanel(QWidget):
             for (neuronNr, neuron) in enumerate(layer.neurons):
                 centerPoint = self.points[layerNr][neuronNr] - Point.Point(20, 12)
 
-                # String objects are not removed. Only updated if available
-                # TODO: If this is faster then removing / creating then rewrite for Rect/Lines
-                # TODO: Implement metrics to prove performance improvements
                 if neuronNr >= len(self.neuronValueStrings[layerNr]):
                     self.neuronValueStrings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.value)))
                 else:
