@@ -23,7 +23,7 @@ def deNormalize(normalized, maxValue, minValue):
 
 cases = [
     [2, 10, 250, 300, 1],
-    [4, 10, 350, 350, 0],
+    [4, 5, 350, 350, 0],
     [5, 10, 500, 450, 1],
     [3, 10, 1000, 450, 0],
     [2, 10, 250, 300, 1]
@@ -59,7 +59,8 @@ while running:
     incomingBuffer = incomingBuffer + dataString
     strings = incomingBuffer.split('\n')
     for message in strings[:-1]:
-        print(str(message))
+        returnValue = float(message)
+        print(str(deNormalize(returnValue, 0, 20000000)))
 
         if '\0' in message:
             running = False

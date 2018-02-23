@@ -18,7 +18,11 @@ class SocketClientProcessor(QThread):
 
     def sendComputedResult(self, usedInputData, computedOutputData):
         print('Sending response')
-        self.connection.sendall('DANK\0'.encode());
+
+        for(brainNr, brainResult) in enumerate(computedOutputData):
+            self.connection.sendall((''.join(str(element) for element in brainResult) + '\n').encode());
+
+        self.connection.sendall('exit\0'.encode());
         return
 
     def run(self):
