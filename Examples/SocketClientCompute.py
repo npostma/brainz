@@ -16,17 +16,13 @@ def normalize(value, minValue, maxValue):
     return normalized
 
 
-def deNormalize(normalized, maxValue, minValue):
-    deNormalized = (normalized * (maxValue - minValue) + minValue)
+def deNormalize(normalized, minValue, maxValue):
+    deNormalized = ((normalized * (maxValue - minValue)) + minValue)
 
     return deNormalized;
 
 cases = [
-    [2, 10, 250, 300, 1],
-    [4, 5, 350, 350, 0],
-    [5, 10, 500, 450, 1],
-    [3, 10, 1000, 450, 0],
-    [2, 10, 250, 300, 1]
+    [5, 5, 350, 280, 0],
 ]
 
 inputData = cases[0]
@@ -60,7 +56,7 @@ while running:
     strings = incomingBuffer.split('\n')
     for message in strings[:-1]:
         returnValue = float(message)
-        print(str(deNormalize(returnValue, 0, 20000000)))
+        print(str(deNormalize(returnValue, 0, 2000000)))
 
         if '\0' in message:
             running = False
