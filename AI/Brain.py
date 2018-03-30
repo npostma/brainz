@@ -59,15 +59,19 @@ class Brain:
         self.studyCases = {}
         self.layersReversedSequence = {}
 
+        extraNeurons = 0
+        if self.biasValue:
+            extraNeurons = 1
+
         # Rule of thumb to determine which size the neural network sould have
         # https://chatbotslife.com/machine-learning-for-dummies-part-2-270165fc1700
         # Adding one extra neuron to the layer based on the rule of thumb gives better/accurate results.
         if self.inputSize > self.outputSize:
             self.hiddenSize = self.inputSize
-            self.numLayers = max(self.inputSize - self.outputSize, 3)
+            self.numLayers = max((self.inputSize - self.outputSize) + extraNeurons, 3)
         else:
             self.hiddenSize = self.outputSize
-            self.numLayers = max(self.outputSize - self.inputSize, 3)
+            self.numLayers = max((self.outputSize - self.inputSize) + extraNeurons, 3)
 
         self.createLayers()
 
