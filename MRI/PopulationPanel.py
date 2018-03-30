@@ -231,12 +231,12 @@ class PopulationPanel(QWidget):
                 if i == 0:
                     numInSet = 1
                 elif numInSet != 1:
-                    self.mainWindow.windowStatusBar.showMessage('Input of dataset is not correct, sizes do not match',
+                    self.mainWindow.windowStatusBar.showMessage('Input of data set is not correct, sizes do not match',
                                                                 5000)
                     return
 
                 if not trainingSet:
-                    self.mainWindow.windowStatusBar.showMessage('Input data of dataset is not correct', 5000)
+                    self.mainWindow.windowStatusBar.showMessage('Input data of data set is not correct', 5000)
                     return
 
                 inputData[0].append(float(trainingSet))

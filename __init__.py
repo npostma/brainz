@@ -19,7 +19,7 @@ mainWindow = Window.Window(app)
 
 mainWindow.startListening()
 
-population = Population.Population(5, 1, 4)
+population = Population.Population(2, 1, 4)
 
 mainWindow.addPopulation(population)
 

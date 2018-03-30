@@ -82,6 +82,9 @@ class Neuron:
         except IndexError:
             return
 
+    def isBias(self):
+        return self.type == self.TYPE_BIAS
+
     # Activation function outputs a value between 0 and 1
     def activate(self, incomingValue):
         self.incomingValue = incomingValue

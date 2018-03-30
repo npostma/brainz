@@ -44,6 +44,9 @@ class Brain:
     # Number of biased neurons per layer
     biasSize = 0
 
+    # Reversed layer sequence
+    layersReversedSequence = {}
+
     def __init__(self, inputSize=6, outputSize=2):
 
         # Set default values
@@ -54,6 +57,7 @@ class Brain:
         self.outputSize = outputSize
         self.biasValue = 1
         self.studyCases = {}
+        self.layersReversedSequence = {}
 
         # Rule of thumb to determine which size the neural network sould have
         # https://chatbotslife.com/machine-learning-for-dummies-part-2-270165fc1700
@@ -132,6 +136,9 @@ class Brain:
 
             self.layers.append(layer)
 
+        # Eg. 4 layers? Then range: 2,1,0
+        self.layersReversedSequence = list(range(len(self.layers) - 2, -1, -1))
+
         if self.biasValue is not None:
             # If bias is used the size gets +1
             # Adding this in the end prevents adding normal neurons
@@ -140,7 +147,6 @@ class Brain:
             self.biasSize += 1
 
     def compute(self, inputData):
-
         # Give input to the sensors
         for (neuronNr, inputNeuron) in enumerate(self.layers[0].neurons):
             if inputNeuron.type == inputNeuron.TYPE_BIAS:
@@ -155,16 +161,17 @@ class Brain:
             # Loop through the neurons in the current layer
             for (neuronNr, neuron) in enumerate(self.layers[i].neurons):
 
-                if neuron.type == neuron.TYPE_BIAS:
+                if neuron.isBias():
                     # Don't calculate the value of a bias neuron. It has no incoming synapse(s)
                     continue
 
-                value = 0;
+                value = 0
+                synapses = neuron.synapses
                 for (neuronNrPrevLayer, neuronPrevLayer) in enumerate(previousLayer.neurons):
                     # The value of each previous neuron multiplied with the weight in the current layer
                     # This value will be stored in the current neuron.
                     # This way the value will traverse through our network
-                    value += neuronPrevLayer.value * neuron.synapses[neuronNrPrevLayer].weight
+                    value += neuronPrevLayer.value * synapses[neuronNrPrevLayer].weight
 
                 # SUM the total value in the collection
                 neuron.activate(value)
@@ -172,33 +179,34 @@ class Brain:
     def learn(self, inputData, outputData):
         self.learnCycle += 1
 
+        self.measureFitness(outputData)
+
         self.compute(inputData)
 
-        return self.__learn(inputData, outputData)
+        self.__learn(inputData, outputData)
 
     def __learn(self, inputData, outputData):
         # Store all cases. This could get big. Time will tell
 
         # TODO: Check memory usage and performance after a lot of learning
-        dataString = "-".join(map(str, inputData))
+        dataString = '-'.join(map(str, inputData))
         self.studyCases[dataString] = {'input': inputData, 'expectedOutput': outputData}
 
+        layers = self.layers;
+
         # Calculate the gradient for the output layer
-        for (neuronNr, neuron) in enumerate(self.layers[-1].neurons):
+        for (neuronNr, neuron) in enumerate(layers[-1].neurons):
             neuron.delta = self.errorFunction(neuron.value, outputData[neuronNr])
 
         # Calculate a gradient for the hidden and input layers. From right to left
-        # Eg. 4 layers? Then range: 2,1,0
-        layersReversed = list(range(len(self.layers) - 2, -1, -1))
-
-        for (layerNr) in layersReversed:
+        for (layerNr) in self.layersReversedSequence:
 
             # Watch one layer to the right to calculate the delta
             # Eg. a delta between:
             # the last layer and output, 1th hidden layer and 2th hidden layer, input layer and 1e hidden layer
-            nextLayer = self.layers[layerNr + 1]
+            nextLayer = layers[layerNr + 1]
 
-            for (neuronNr, neuron) in enumerate(self.layers[layerNr].neurons):
+            for (neuronNr, neuron) in enumerate(layers[layerNr].neurons):
 
                 error = 0
                 for (nextNeuronNr, nextNeuron) in enumerate(nextLayer.neurons):
@@ -211,19 +219,22 @@ class Brain:
                 neuron.delta = neuron.value * (1 - neuron.value) * error
 
         # Recalculate the weight based on the gradient
-        for (layerNr, layer) in enumerate(self.layers):
+        learningRate = self.learningRate
+        learningMomentum = self.learningMomentum
+        for (layerNr, layer) in enumerate(layers):
             for (neuronNr, neuron) in enumerate(layer.neurons):
-                neuron.bias += self.learningRate * neuron.delta
+                neuron.bias += learningRate * neuron.delta
 
-                if layerNr > 0:
-                    previousLayer = self.layers[layerNr - 1]
-                    for (synapseNr, synapse) in enumerate(neuron.synapses):
-                        previousNeuron = previousLayer.neurons[synapseNr]
-                        value = previousNeuron.value
-                        delta = self.learningRate * neuron.delta * value
-                        neuron.synapses[synapseNr].weight += delta + self.learningMomentum * neuron.synapses[
-                            synapseNr].gradient
-                        neuron.synapses[synapseNr].gradient = delta
+                if layerNr == 0:
+                    continue
+
+                previousLayer = layers[layerNr - 1]
+                for (synapseNr, synapse) in enumerate(neuron.synapses):
+                    previousNeuron = previousLayer.neurons[synapseNr]
+                    value = previousNeuron.value
+                    delta = learningRate * neuron.delta * value
+                    synapse.weight += delta + learningMomentum * synapse.gradient
+                    synapse.gradient = delta
 
     def errorFunction(self, value, expected):
         return value * (1 - value) * (expected - value)
@@ -235,13 +246,18 @@ class Brain:
     # 3 - Measure fitness(es)
     # 4 - calculate some super value that really tells how good this brain has become
     def measureOverallFitness(self):
+        numStudyCases = len(self.studyCases.items())
 
-        self.overallFitness = 0
+        if numStudyCases == 0:
+            self.overallFitness = 0
+            return
+
+        overallFitness = 0
         for (caseNr, case) in self.studyCases.items():
             self.compute(case['input'])
-            self.overallFitness += self.measureFitness(case['expectedOutput'])
+            overallFitness += self.measureFitness(case['expectedOutput'])
 
-        self.overallFitness = self.overallFitness / len(self.studyCases.items())
+        self.overallFitness = overallFitness / numStudyCases
 
     # Determine the fitness for now by hand. So I give it a expected output.
     # This wil NOT be used for learning but to determine how good the brain has become

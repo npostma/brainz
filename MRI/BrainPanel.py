@@ -97,7 +97,11 @@ class BrainPanel(QWidget):
     def SubmitClicked(self):
         data = list()
         for (i, inputField) in enumerate(self.inputs):
-            data.append(float(inputField.text()))
+            try:
+                data.append(float(inputField.text()))
+            except ValueError:
+                self.setWindowTitle('Value not correct')
+                return
 
         self.brain.compute(data)
         self.update()
@@ -105,7 +109,12 @@ class BrainPanel(QWidget):
     def update(self):
         self.updateDynamicDrawables()
 
-        self.setWindowTitle("Cycle:" + str(self.brain.learnCycle))
+        self.brain.measureOverallFitness();
+        self.setWindowTitle("OverallF: "
+                            + str(round(self.brain.overallFitness, 5))
+                            + " LastF: "
+                            + str(round(self.brain.fitness, 5))
+                            + " Cycle:" + str(self.brain.learnCycle))
 
         self.canvas.reset()
 
@@ -146,7 +155,7 @@ class BrainPanel(QWidget):
         self.createLines()
         self.createStrings()
 
-        self.canvas.addRectanges(self.rectangles)
+        self.canvas.addRectangles(self.rectangles)
 
     def updateStrings(self):
         for (layerNr, layer) in enumerate(self.brain.layers):

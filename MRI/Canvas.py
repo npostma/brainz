@@ -61,7 +61,7 @@ class Canvas(QWidget):
     def addString(self, string):
         self.strings.append(string)
 
-    def addRectanges(self, rectangles):
+    def addRectangles(self, rectangles):
         for (i, rectangle) in enumerate(rectangles):
             self.addRectangle(rectangle)
 

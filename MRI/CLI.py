@@ -22,9 +22,9 @@ class CLI:
         sys.stdout.write('\n[Layer]\t\t[Type]\t[Values, .., ..]\n')
 
         for (layerNr, layer) in enumerate(self.brain.layers):
-            if (layerNr == 0):
+            if layerNr == 0:
                 sys.stdout.write('[Input]\t')
-            elif (layerNr == (len(self.brain.layers) - 1)):
+            elif layerNr == (len(self.brain.layers) - 1):
                 sys.stdout.write('[Output]')
             else:
                 sys.stdout.write('[Hidden]')
@@ -47,7 +47,7 @@ class CLI:
                 self.printRestTabs(neuron.delta)
 
             for (neuronNr, neuron) in enumerate(layer.neurons):
-                if (len(neuron.weights) == 0):
+                if len(neuron.weights) == 0:
                     continue
 
                 sys.stdout.write('\n')
