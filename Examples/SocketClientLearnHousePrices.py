@@ -63,7 +63,7 @@ for (i) in range(0, 500):
 
         priceOfHouse = normalize(expectedOutputData[0], 0, 2000000)
 
-        # Slaapkamers, Afstand van centrum, Perceel oppervlakte, Inhoud, Tuin op zuinden, Groen
+        # Slaapkamers, Afstand van centrum, Perceel oppervlakte, Inhoud, Tuin op zuiden, Groen
         socket.sendall(
             str("{\"command\": \"learn\", \"input\": [" + str(numBedRooms) + ", " + str(
                 distanceFromCityCenter) + ", " + str(squareFeetGround) + ", " + str(cubicFeetContent) + ", " + str(

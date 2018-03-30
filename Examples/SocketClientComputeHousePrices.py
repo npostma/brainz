@@ -34,7 +34,7 @@ cubicFeetContent = normalize(inputData[3], 200, 1000)
 gardenFacingSouth = normalize(inputData[4], 0, 1)
 
 print('Sending data')
-# Slaapkamers, Afstand van centrum, Perceel oppervlakte, Inhoud, Tuin op zuinden, Groen
+# Slaapkamers, Afstand van centrum, Perceel oppervlakte, Inhoud, Tuin op zuiden, Groen
 socket.sendall(
     str("{\"command\": \"compute\", \"input\": [" + str(numBedRooms) + ", " + str(
         distanceFromCityCenter) + ", " + str(squareFeetGround) + ", " + str(cubicFeetContent) + ", " + str(

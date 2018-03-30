@@ -31,7 +31,6 @@ cases = [
 print('Sending data')
 
 for (caseNr, case) in enumerate(cases):
-    # Slaapkamers, Afstand van centrum, Perceel oppervlakte, Inhoud, Tuin op zuinden, Groen
     socket.sendall(
         str("{\"command\": \"compute\", \"input\": [" + str(case[0]) + ", " + str(
             case[1]) + "]}" + '\n').encode())
