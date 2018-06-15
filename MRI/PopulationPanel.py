@@ -137,12 +137,32 @@ class PopulationPanel(QWidget):
 
         verticalStack.addWidget(line)
 
+        recomputeOverallFitnessButton = QPushButton()
+        recomputeOverallFitnessButton.clicked.connect(self.recomputeOverallFitnessButtonClicked)
+        recomputeOverallFitnessButton.setText("Recalc Ov.F.")
+        verticalStack.addWidget(recomputeOverallFitnessButton)
+
+        line = QFrame()
+        line.setFrameShape(QFrame.HLine)
+        line.setFrameShadow(QFrame.Plain)
+
         verticalStack.addStretch()
 
         self.setLayout(verticalStack)
 
     def applyActivationClicked(self):
         self.mainWindow.activePopulation.setActivationFunction(str(self.layerTypeSelect.currentText()), str(self.activationFunctionSelect.currentText()))
+
+        index = self.populationSelection.currentIndex()
+
+        # Update text on brain panels
+        brainPanels = self.mainWindow.panels[index]
+
+        # Clean up panels
+        for (i, panelData) in enumerate(brainPanels):
+            panel = panelData['panel']
+            panel.createStrings()
+
         self.mainWindow.update()
 
     def computeClicked(self):
@@ -168,7 +188,7 @@ class PopulationPanel(QWidget):
             self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)
             return
 
-            # Remove panels from te list
+        # Remove panels from te list
         brainPanels = self.mainWindow.panels[index]
 
         # Clean up panels
@@ -227,6 +247,7 @@ class PopulationPanel(QWidget):
                         return
 
                     inputData[j].append(float(value))
+
             else:
                 if i == 0:
                     numInSet = 1
@@ -249,12 +270,13 @@ class PopulationPanel(QWidget):
             if ';' in outputSet:
                 outputSet = outputSet.split(';')
 
-                for (j, value) in enumerate(outputSet[:-1]):
+                for (j, value) in enumerate(outputSet):
 
                     if j >= len(expectedOutput):
                         expectedOutput.insert(j, list())
 
                     expectedOutput[j].append(float(value))
+
             else:
                 if not outputSet:
                     self.mainWindow.windowStatusBar.showMessage('Output data of data set is not correct', 5000)
@@ -292,3 +314,20 @@ class PopulationPanel(QWidget):
 
     def activatePopulation(self, option):
         self.mainWindow.activePopulation = self.mainWindow.populations[int(option)]
+
+    def recomputeOverallFitnessButtonClicked(self):
+        if self.mainWindow.activePopulation is None:
+            self.mainWindow.windowStatusBar.showMessage('No active populations left. Please reboot the program', 5000)
+            return
+
+        index = self.populationSelection.currentIndex()
+
+        self.mainWindow.activePopulation.measureOverallFitness()
+
+        # Update text on brain panels
+        brainPanels = self.mainWindow.panels[index]
+
+        # Clean up panels
+        for (i, panelData) in enumerate(brainPanels):
+            panel = panelData['panel']
+            panel.updateTitle()

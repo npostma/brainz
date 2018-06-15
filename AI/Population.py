@@ -207,3 +207,8 @@ class Population:
                         continue
 
                     neuron.setActivationFunction(activationFunction)
+
+    def measureOverallFitness(self):
+        # Calculate overall fitness for all brains
+        for (brainNr, brain) in enumerate(self.brains):
+            brain.measureOverallFitness()

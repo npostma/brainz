@@ -194,7 +194,7 @@ class Brain:
 
         # TODO: Check memory usage and performance after a lot of learning
         dataString = '-'.join(map(str, inputData))
-        self.studyCases[dataString] = {'input': inputData, 'expectedOutput': outputData}
+        self.studyCases[ dataString ] = {'input': inputData, 'expectedOutput': outputData}
 
         layers = self.layers;
 
@@ -250,15 +250,17 @@ class Brain:
     # 3 - Measure fitness(es)
     # 4 - calculate some super value that really tells how good this brain has become
     def measureOverallFitness(self):
+
         numStudyCases = len(self.studyCases.items())
 
         if numStudyCases == 0:
-            self.overallFitness = 0
+            self.overallFitness = -1
             return
 
         overallFitness = 0
         for (caseNr, case) in self.studyCases.items():
             self.compute(case['input'])
+            print(str(case['input']) + ' --> ' + str(case['expectedOutput']))
             overallFitness += self.measureFitness(case['expectedOutput'])
 
         self.overallFitness = overallFitness / numStudyCases

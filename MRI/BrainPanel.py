@@ -33,6 +33,8 @@ class BrainPanel(QWidget):
 
     canvasTool = None
 
+    updateCounter = 0;
+
     def __init__(self, brain):
         super(BrainPanel, self).__init__()
 
@@ -44,6 +46,8 @@ class BrainPanel(QWidget):
         # Static drawable objects
         self.rectangles = list()
         self.points = list()
+
+        self.updateCounter = 0;
 
         # Dynamic drawable objects
         self.lines = list()
@@ -107,14 +111,15 @@ class BrainPanel(QWidget):
         self.update()
 
     def update(self):
+        self.updateCounter += 1
+
         self.updateDynamicDrawables()
 
-        self.brain.measureOverallFitness();
-        self.setWindowTitle("OverallF: "
-                            + str(round(self.brain.overallFitness, 5))
-                            + " LastF: "
-                            + str(round(self.brain.fitness, 5))
-                            + " Cycle:" + str(self.brain.learnCycle))
+        print (self.updateCounter)
+        if self.updateCounter % 100 == 0:
+            self.brain.measureOverallFitness()
+            self.updateTitle()
+            # Update once in the 100 updates. This is for visualization, so there is no need to be a performance killer.
 
         self.canvas.reset()
 
@@ -122,6 +127,13 @@ class BrainPanel(QWidget):
         self.canvas.addLines(self.getLines())
 
         self.canvas.repaint()
+
+    def updateTitle(self):
+        self.setWindowTitle("OverallF: "
+                            + str(round(self.brain.overallFitness, 5))
+                            + " LastF: "
+                            + str(round(self.brain.fitness, 5))
+                            + " Cycle:" + str(self.brain.learnCycle))
 
     def getRectangles(self):
         return self.rectangles
@@ -160,7 +172,7 @@ class BrainPanel(QWidget):
     def updateStrings(self):
         for (layerNr, layer) in enumerate(self.brain.layers):
             for (neuronNr, neuron) in enumerate(layer.neurons):
-                self.neuronValueStrings[layerNr][neuronNr].setText(str(neuron.value))
+                self.neuronValueStrings[layerNr][neuronNr].setText(str(round(neuron.value, 6)))
 
     def createStrings(self):
         self.functionNames = list()
@@ -173,7 +185,7 @@ class BrainPanel(QWidget):
             for (neuronNr, neuron) in enumerate(layer.neurons):
                 centerPoint = self.points[layerNr][neuronNr] - Point.Point(20, 12)
 
-                self.neuronValueStrings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(neuron.value)))
+                self.neuronValueStrings[layerNr].insert(neuronNr, Label.Label(centerPoint, str(round(neuron.value, 6))))
 
                 functionNamePoint = centerPoint + Point.Point(0, 30)
 

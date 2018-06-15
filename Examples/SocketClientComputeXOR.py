@@ -50,7 +50,7 @@ for (caseNr, case) in enumerate(cases):
         incomingBuffer = incomingBuffer + dataString
         strings = incomingBuffer.split('\n')
         for message in strings[:-1]:
-            print ('Response for case' + str(case) + ': ')
+            print('Response for case' + str(case) + ': ')
             print(message)
 
             if '\0' in message:

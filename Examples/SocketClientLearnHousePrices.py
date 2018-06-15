@@ -22,7 +22,7 @@ def deNormalize(normalized, maxValue, minValue):
     return deNormalized;
 
 
-for (i) in range(0, 500):
+for (i) in range(0, 2500):
 
     cases = [
         [[2, 10, 250, 300, 1], [120000]],
@@ -63,7 +63,7 @@ for (i) in range(0, 500):
 
         priceOfHouse = normalize(expectedOutputData[0], 0, 2000000)
 
-        # Slaapkamers, Afstand van centrum, Perceel oppervlakte, Inhoud, Tuin op zuiden, Groen
+        # Slaapkamers, Afstand van centrum, Perceel oppervlakte, Inhoud, Tuin op zuiden
         socket.sendall(
             str("{\"command\": \"learn\", \"input\": [" + str(numBedRooms) + ", " + str(
                 distanceFromCityCenter) + ", " + str(squareFeetGround) + ", " + str(cubicFeetContent) + ", " + str(

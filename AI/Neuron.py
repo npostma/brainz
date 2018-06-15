@@ -92,7 +92,11 @@ class Neuron:
 
     # return 1 / (1 + math.exp(-value))
     def __sigmoid(self, value):
-        return 1 / (1 + math.exp((-1 * value) / 1))
+        try:
+            return 1 / (1 + math.exp((-1 * value) / 1))
+        except OverflowError:
+            print(str(value) + " is to big for the exp function")
+            return 0
 
     # Activation function outputs a value between -1 and 1 (Just an wrapper for math.tanh(x))
     def __tanh(self, value):

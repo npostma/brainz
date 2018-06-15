@@ -92,14 +92,7 @@ class Window(QMainWindow):
         if self.initialized:
             raise Exception("Already started")
 
-        self.leftDock = QDockWidget("Population control", self)
-        self.populationPanel = PopulationPanel.PopulationPanel(self, self.activePopulation.inputSize,
-                                                               self.activePopulation.outputSize)
-        self.populationPanel.setupLayout()
-        self.leftDock.setWidget(self.populationPanel)
-        self.leftDock.setFloating(False)
-
-        self.addDockWidget(Qt.LeftDockWidgetArea, self.leftDock)
+        self.setupPopulationPanel()
 
         self.windowStatusBar = QStatusBar()
         self.setStatusBar(self.windowStatusBar)
@@ -155,6 +148,19 @@ class Window(QMainWindow):
         self.show()
 
         self.initialized = True
+
+    def setupPopulationPanel(self):
+        if self.activePopulation is None:
+            return
+
+        self.leftDock = QDockWidget("Population control", self)
+        self.populationPanel = PopulationPanel.PopulationPanel(self, self.activePopulation.inputSize,
+                                                               self.activePopulation.outputSize)
+        self.populationPanel.setupLayout()
+        self.leftDock.setWidget(self.populationPanel)
+        self.leftDock.setFloating(False)
+
+        self.addDockWidget(Qt.LeftDockWidgetArea, self.leftDock)
 
     def cascadePanels(self):
         self.mdi.cascadeSubWindows()

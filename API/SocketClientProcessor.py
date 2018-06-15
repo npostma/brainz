@@ -20,7 +20,7 @@ class SocketClientProcessor(QThread):
         print('Sending response')
 
         for(brainNr, brainResult) in enumerate(computedOutputData):
-            self.connection.sendall((''.join(str(element) for element in brainResult) + '\n').encode());
+            self.connection.sendall((';'.join(str(element) for element in brainResult) + '\n').encode());
 
         self.connection.sendall('exit\0'.encode());
         return
@@ -44,7 +44,7 @@ class SocketClientProcessor(QThread):
             if not dataString:
                 break
 
-            print('SocketServer: Input received.')
+            print('SocketServer: Input received. buffer size' + str(len(incomingBuffer)))
 
             incomingBuffer = incomingBuffer + dataString
             strings = incomingBuffer.split('\n')
