@@ -19,7 +19,11 @@ mainWindow = Window.Window(app)
 
 mainWindow.startListening()
 
-population = Population.Population(2, 1, 1)
+### XOR
+population = Population.Population(2, 1, 10)
+
+### House prices
+#population = Population.Population(5, 1, 4)
 
 mainWindow.addPopulation(population)
 

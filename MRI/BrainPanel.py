@@ -115,7 +115,6 @@ class BrainPanel(QWidget):
 
         self.updateDynamicDrawables()
 
-        print (self.updateCounter)
         if self.updateCounter % 100 == 0:
             self.brain.measureOverallFitness()
             self.updateTitle()
@@ -176,6 +175,7 @@ class BrainPanel(QWidget):
 
     def createStrings(self):
         self.functionNames = list()
+        self.neuronValueStrings = list()
 
         for (layerNr, layer) in enumerate(self.brain.layers):
 

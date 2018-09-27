@@ -22,8 +22,8 @@ def deNormalize(normalized, minValue, maxValue):
     return deNormalized;
 
 cases = [
-    [5, 5, 350, 280, 0], # Somewhere around 500 000?
-    [3, 10, 450, 350, 0] # Somewhere around 175 000?
+    [5, 5, 350, 280, 0], # Somewhere around 600 000?
+    [3, 10, 450, 350, 0] # Somewhere around 200 000?
 ]
 
 for (caseNr, case) in enumerate(cases):

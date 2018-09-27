@@ -260,7 +260,7 @@ class Brain:
         overallFitness = 0
         for (caseNr, case) in self.studyCases.items():
             self.compute(case['input'])
-            print(str(case['input']) + ' --> ' + str(case['expectedOutput']))
+            #print(str(case['input']) + ' --> ' + str(case['expectedOutput']))
             overallFitness += self.measureFitness(case['expectedOutput'])
 
         self.overallFitness = overallFitness / numStudyCases
